@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="../css/styles.css" rel="stylesheet" />
+    <link href="../icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!--Main Navigation-->
+    <header>
+      <style>
+        /* Carousel styling */
+        #introCarousel
+        .carousel-item{
+          background-image: url('../images/banner1.jpg');
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center center;
+        }
+        
+        .text-theem{
+          color: #0D572B !important;
+        }
+    
+        /* Height for devices larger than 576px */
+        @media (min-width: 992px) {
+          #introCarousel {
+            margin-top: -58.59px;
+          }
+          #introCarousel,
+          .carousel-inner,
+          .carousel-item,
+          .carousel-item.active {
+            height: 70vh;
+          }
+        }
+    
+        
+      </style>
+    
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-dark d-none d-lg-block" style="z-index: 2000;">
+        <div class="container ">
+          <!-- Navbar brand -->
+          <a class=" navbar-brand nav-link " target="_blank" href="">
+            <strong class="text-theem fw-bold">XURIBUS</strong>
+          </a>
+          <div class="collapse navbar-collapse" id="navbarExample01">
+            <ul class="navbar-nav  me-auto mb-2 mb-lg-0">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-theem" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Tuyến đường
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" >
+                  <li th:each=" route : ${routes}" ><a class="dropdown-item"  th:href="@{/public/{routeId}(routeId = ${route.getId()})}" href="" th:text="${route.getName()}" ></a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-theem" href="" rel="nofollow"
+                   target="_blank">Dịch vụ</a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link text-theem" href="" target="_blank">khám phá</a>
+              </li>
+            </ul>
+            <div class="navbar-nav d-flex flex-row">
+              <button type="button" class="btn btn-outline-success text-theem fw-bold" disabled>Hotline : 0989 026 888</button>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <!-- Navbar -->
+    
+      <!-- Carousel wrapper -->
+      <div id="introCarousel" class="carousel slide carousel-fade shadow-2-strong mt-0" >
+          <div class="carousel-item active">
+            <div class="mask" style="background-color: rgba(0, 0, 0, 0.2); height: 100%;">
+              <div class="container d-flex justify-content-start d-flex align-items-center h-100">
+                <div class="m-5 text-white text-center" data-mdb-theme="dark">
+                  <h1 class="mb-3 text-theem ">CHÚNG TÔI CÓ THỂ ĐƯA BẠN ĐÂU ?</h1>
+                  <h5 class="mb-4 text-theem ">An toàn của khách hàng là trên hết</h5>
+                  <a
+                     class="btn btn-success btn-outline-light btn-lg m-2"
+                     th:href="@{/public/schedule}"
+                     >MUA VÉ NGAY</a
+                    >
+                  <a
+                     class="btn btn-success btn-outline-light btn-lg m-2" data-mdb-ripple-init
+                     th:href="@{/user}"
+                     role="button"
+                     >QUẢN LÝ VÉ</a>
+                  <!-- MANAGER YOUR TICKETS-->
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <!-- Carousel wrapper -->
+    </header>
+    <!--Main Navigation-->
+    
+    <!--Main layout-->
+    <main class="mt-5">
+      <div class="container mb-5">
+        <!--Section: Content-->
+        <section>
+          <div class="row">
+            <div class="col-md-6 gx-5 mb-4">
+              <div class="bg-image hover-overlay shadow-2-strong" data-mdb-ripple-init data-mdb-ripple-color="light">
+                <img src="https://mdbootstrap.com/img/new/slides/031.jpg" class="img-fluid" />
+                <a href="#!">
+                  <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                </a>
+              </div>
+            </div>
+    
+            <div class="col-md-6 gx-5 mb-4">
+              <h4><strong class="text-theem">Những gì mong đợi từ XURYBUS ?</strong></h4>
+              <p class="text-muted">
+                Khi nói đến du lịch trong vùng, di chuyển bằng xe buýt có thể là một lựa chọn thuận tiện và
+                tiết kiệm ngân sách. Mặc dù giá cả có thể thay đổi tùy thuộc vào loại xe buýt và thời gian trong năm,
+                giá vé xe buýt thường khá hợp lý và phải chăng hơn so với các phương thức vận chuyển khác.
+              </p>
+              <h4><strong class="text-theem">Liên hệ</strong></h4>
+              <p class=" text-muted">Đặt vé : <strong class="text-theem">0999.999.999</strong> </p>
+              <p class=" text-muted"> Hợp đồng thuê xe : <strong class="text-theem">0999.999.998</strong> </p>
+            </div>
+          </div>
+        </section>
+        <!--Section: Content-->
+    
+        <hr class="my-5" />
+    
+        <!--Section: Content-->
+        <section class="text-center">
+          <h4 class="mb-5"><strong>CÁC TUYẾN NỔI BẬT</strong></h4>
+    
+          <div class="row">
+            <div class="col-lg-4 col-md-12 mb-4">
+              <div class="card">
+                <div class="bg-image hover-overlay" data-mdb-ripple-init data-mdb-ripple-color="light">
+                  <img
+                       src="../images/route11.jpg"
+                       class="img-fluid"
+                       />
+                  <a href="#!">
+                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Đà Nẵng - Hà Tĩnh</h5>
+                  <p class="card-text">
+                    Tuyến xe Đà Nẵng - Hà Tĩnh và ngược lại của XURYBUS là gồm hai dòng xe 44 giường
+                    và 34 phòng riêng biệt, khởi hành vào buổi tối hằng ngày.
+                  </p>
+                  <a href="#!" class="btn btn-success " data-mdb-ripple-init>Xem ngay</a>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="card">
+                <div class="bg-image hover-overlay" data-mdb-ripple-init data-mdb-ripple-color="light">
+                  <img
+                       src="../images/route33.jpg"
+                       class="img-fluid"
+                       />
+                  <a href="#!">
+                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Đà Nẵng - Nghệ An</h5>
+                  <p class="card-text">
+                    Tuyến xe Đà Nẵng - Nghệ An và ngược lại của XURYBUS là gồm hai dòng xe 44 giường
+                    và 34 phòng riêng biệt, khởi hành vào buổi tối hằng ngày.
+                  </p>
+                  <a href="#!" class="btn btn-success" data-mdb-ripple-init>Xem ngay</a>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="card">
+                <div class="bg-image hover-overlay" data-mdb-ripple-init data-mdb-ripple-color="light">
+                  <img
+                       src="../images/route22.jpg"
+                       class="img-fluid"
+                       />
+                  <a href="#!">
+                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">Đà Nẵng - Thái Bình</h5>
+                  <p class="card-text">
+                    Tuyến xe Đà Nẵng - Thái Bình và ngược lại của XURYBUS là gồm hai dòng xe 44 giường
+                    và 34 phòng riêng biệt, khởi hành vào buổi tối hằng ngày.
+                  </p>
+                  <a href="#!" class="btn btn-success" data-mdb-ripple-init>Xem ngay</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!--Section: Content-->
+    
+        <hr class="my-5" />
+    
+        <!--Section: Content-->
+        <section >
+          <h4 class="text-center"><strong>QUY ĐỊNH CƠ BẢN</strong></h4>
+          <div class=" row d-flex justify-content-around ">
+            <div class=" my-5 col-md-5 gx-5 d-flex align-items-center flex-column" style="border:3px dashed #0c4128 ;">
+              <div class="px-2  py-5">
+                <h4 class="text-center ">HÀNH LÝ KÝ GỬI</h4>
+                <p> Tư trang, tiền, vàng bạc có giá trị, đồ vật dễ vỡ, các thiết bị điện tử, các giấy tờ có tính pháp
+                  lý,… quý khánh nên mang theo bên người,
+                  chúng tôi không chịu trách nhiệm lưu giữ và đền bù nếu xảy ra mất mát.</p>
+                <p>Chúng tôi chỉ miễn phí đối với hành lý ký gửi dưới 15kg. Nếu hành lý của quý khách vượt quá giới hạn
+                  cho phép,
+                  nhân viên của chúng tôi sẽ thu thêm phí.</strong></p>
+              </div>
+            </div>
+
+            <div class=" my-5 col-md-5 gx-5 d-flex align-items-center flex-column" style="border:3px dashed #0c4128 ;">
+              <div class="px-2 py-5">
+                <h4 class="text-center">HÀNH KHÁCH ĐI KÈM</h4>
+                <p>Chúng tôi chỉ miễn phí cho hành khách đi kèm có chiều cao dưới 1.2m. Nếu vượt quá giới hạn cho phép,
+                  nhân viên của chúng tôi sẽ coi là một hành khách bình thường.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!--Section: Content-->
+
+        <hr class="my-5" />
+
+        <section class="mb-5">
+          <h4 class="mb-5 text-center"><strong>CHƯƠNG TRÌNH KHUYẾN MÃI</strong></h4>
+          <div class="row d-flex justify-content-around ">
+            <div class="col-md-5 gx-5 d-flex align-items-center flex-column" style="border:3px dashed #0D572B ;">
+              <div class="px-2 py-5 w-100">
+                <h4 class="pb-4 text-center">KHÁCH HÀNG THÂN THIẾT</h4>
+                <p><i class="bi bi-gift-fill pe-2"></i>Giảm giá 50% khi tích lũy được 20 chuyến.</p>
+                <hr/>
+                <p><i class="bi bi-gift-fill pe-2"></i>Giảm giá 20% khi tích lũy được từ 10 – 19 chuyến.</p>
+                <hr/>
+                <p><i class="bi bi-gift-fill pe-2"></i>Giảm giá 5% khi tích lũy được từ 5 – 9 chuyến.</p>
+                <div class="d-flex justify-content-center align-items-center">
+                  <a class="mt-4 btn col-6 bg-success text-white " href="#" role="button">TÌM HIỂU NGAY</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-5 gx-5 d-flex align-items-center flex-column" style="border:3px dashed #0D572B ;">
+              <div class="px-2 py-5 w-100">
+                <h4 class="pb-4 text-center">CHIẾC HỘP MAY MẮN</h4>
+                <p><i class="bi bi-gift-fill pe-2"></i>1 Iphone 15 Pro max phiên bản mới nhất.</p>
+                <hr/>
+                <p><i class="bi bi-gift-fill pe-2"></i>Hơn 5000 mã giảm giá có mệnh giá lên tới 50.000đ.</p>
+                <hr/>
+                <p><i class="bi bi-gift-fill pe-2"></i>Nhiều phần quà nhỏ khác đang chờ bạn khám phá.</p>
+                <div class="d-flex justify-content-center align-items-center">
+                  <a class="mt-4 btn col-6 bg-success text-white " href="#" role="button">TÌM HIỂU NGAY</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+      </div>
+    </main>
+    <!--Main layout-->
+    <div th:replace="public/footer:: footer"></div>
+    <script src="../js/scripts.js"></script>
+    <script src="../js/bootstrap.bundle.js"></script>
+</body>
+</html>

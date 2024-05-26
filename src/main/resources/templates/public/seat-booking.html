@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="public/layout-static.html">// kế thừa layout static
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de lugares</title>
+    <style>
+
+        /*seat booking*/
+        footer a{
+            text-decoration: none;
+        }
+        .bus {
+            max-width: 500px;
+            border: 5px solid #d8d8d8;
+            padding-bottom: 10px;
+        }
+
+        .bus label {
+            display: block;
+            position: relative;
+            border: 1px solid;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.5rem;
+            padding: 5px 0;
+            border-radius: 5px;
+            animation-duration: 300ms;
+            animation-fill-mode: both;
+        }
+
+        .exit {
+            position: relative;
+            height: 50px;
+        }
+
+        .exit:before,
+        .exit:after {
+            content: "EXIT";
+            font-size: 14px;
+            line-height: 18px;
+            padding: 0px 2px;
+            font-family: "Arial Narrow", Arial, sans-serif;
+            display: block;
+            position: absolute;
+            background: green;
+            color: white;
+            top: 50%;
+            transform: translate(0, -50%);
+        }
+
+        .exit:before {
+            left: 0;
+        }
+
+        .exit:after {
+            right: 0;
+        }
+
+        .floorbody {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .column {
+            display: flex;
+            flex: 0 0 30%;
+        }
+
+        .row-1 {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: space-between;
+            padding-bottom: 10px;
+        }
+
+        ol {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .seats {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .seat {
+            display: flex;
+            flex: 0 0 10%;
+            padding: 10px;
+            position: relative;
+        }
+
+        .seat input[type=checkbox] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .seat input[type=checkbox]:checked+label {
+            background: #bada55;
+            -webkit-animation-name: rubberBand;
+            animation-name: rubberBand;
+            animation-duration: 300ms;
+            animation-fill-mode: both;
+        }
+
+        .seat input[type=checkbox]:disabled+label {
+            background: #CBC3C3;
+            /*text-indent: -9999px;*/
+            overflow: hidden;
+        }
+
+        /*.seat input[type=checkbox]:disabled+label:after {*/
+        /*    !*content: "X";*!*/
+        /*    text-indent: 0;*/
+        /*    position: absolute;*/
+        /*    top: 4px;*/
+        /*    left: 50%;*/
+        /*    transform: translate(-50%, 0%);*/
+        /*}*/
+
+        .seat input[type=checkbox]:disabled+label:hover {
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .seat label {
+            background: #ffffff;
+        }
+
+        .seat label:before {
+            content: "";
+            position: absolute;
+            width: 75%;
+            height: 75%;
+            top: 1px;
+            left: 50%;
+            transform: translate(-50%, 0%);
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 3px;
+        }
+
+        .seat label:hover {
+            cursor: pointer;
+            box-shadow: 0px 0px 2px 2px #5C6AFF;
+        }
+
+        .lastseat {
+            display: flex;
+            flex: 0 0 18%;
+            padding: 0;
+        }
+
+        .headseat {
+            display: flex;
+            flex: 0 0 33%;
+            padding: 3px 3px 10px 3px;
+        }
+
+
+        .headseat label {
+            background: #d3d2d2;
+        }
+
+
+
+        .formcheck .option {
+            display: flex;
+            flex: 0 0 50%;
+            padding: 10px 3px;
+            position: relative;
+            border-bottom: 5px solid #d8d8d8;
+        }
+
+        .formcheck .option:first-child {
+            border-right: 5px solid #d8d8d8;
+            border-bottom: white;
+        }
+
+        .formcheck input[type=radio] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .formcheck input[type=radio]:checked+label {
+            background-color: #cbc3c3;
+            color: black;
+        }
+
+        .formcheck input[type=radio]:disabled+label {
+            background: #dddddd;
+            text-indent: -9999px;
+            overflow: hidden;
+        }
+
+        .formcheck input[type=radio]:disabled+label:after {
+            content: "X";
+            text-indent: 0;
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translate(-50%, 0%);
+        }
+
+        .formcheck input[type=radio]:disabled+label:hover {
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .formcheck label {
+            background: #ffffff;
+            font-size: 18px;
+        }
+
+        .seat input[type=checkbox].BOOKED+label {
+            background-color: #bdbd00;
+            pointer-events: none;
+        }
+
+        .seat input[type=checkbox].RESERVED+label {
+            background-color: #7e7efd;
+            pointer-events: none;
+        }
+
+        .seat input[type=checkbox].NOT_FOR_SALE+label {
+            background-color: #5c5e60;
+            pointer-events: none;
+        }
+
+        .seat input[type=checkbox].SOLD+label {
+            background-color: #A42323;
+            pointer-events: none;
+        }
+
+
+
+
+        @-webkit-keyframes rubberBand {
+            0% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+
+            30% {
+                -webkit-transform: scale3d(1.25, 0.75, 1);
+                transform: scale3d(1.25, 0.75, 1);
+            }
+
+            40% {
+                -webkit-transform: scale3d(0.75, 1.25, 1);
+                transform: scale3d(0.75, 1.25, 1);
+            }
+
+            50% {
+                -webkit-transform: scale3d(1.15, 0.85, 1);
+                transform: scale3d(1.15, 0.85, 1);
+            }
+
+            65% {
+                -webkit-transform: scale3d(0.95, 1.05, 1);
+                transform: scale3d(0.95, 1.05, 1);
+            }
+
+            75% {
+                -webkit-transform: scale3d(1.05, 0.95, 1);
+                transform: scale3d(1.05, 0.95, 1);
+            }
+
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+        }
+
+        @keyframes rubberBand {
+            0% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+
+            30% {
+                -webkit-transform: scale3d(1.25, 0.75, 1);
+                transform: scale3d(1.25, 0.75, 1);
+            }
+
+            40% {
+                -webkit-transform: scale3d(0.75, 1.25, 1);
+                transform: scale3d(0.75, 1.25, 1);
+            }
+
+            50% {
+                -webkit-transform: scale3d(1.15, 0.85, 1);
+                transform: scale3d(1.15, 0.85, 1);
+            }
+
+            65% {
+                -webkit-transform: scale3d(0.95, 1.05, 1);
+                transform: scale3d(0.95, 1.05, 1);
+            }
+
+            75% {
+                -webkit-transform: scale3d(1.05, 0.95, 1);
+                transform: scale3d(1.05, 0.95, 1);
+            }
+
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+        }
+
+        .rubberBand {
+            -webkit-animation-name: rubberBand;
+            animation-name: rubberBand;
+        }
+
+
+
+
+    </style>
+</head>
+
+<body>
+<div class="container  my-5" layout:fragment="content">
+    <form class="w-100 d-flex justify-content-around" action="#" th:action="@{/public/bookSeats}" method="POST">
+        <div class="col-3">
+            <div class="col-12 bus">
+                <!-- form chon tầng xe -->
+                <ol class="formcheck row-1">
+                    <li class="option " id="fl1">
+                        <input type="radio" id="floor1Checkbox" name="floor" checked onclick="showFloor('floor1')" />
+                        <label for="floor1Checkbox">Tầng 1</label>
+                    </li>
+                    <li class="option " id="fl2">
+                        <input type="radio" id="floor2Checkbox" name="floor" onclick="showFloor('floor2')" />
+                        <label for="floor2Checkbox">Tầng 2</label>
+                    </li>
+                </ol>
+                <!-- FLOOR 1 -->
+                <div class="floor col-12 " id="floor1">
+                    <!-- header floor -->
+                    <ol class="row-1">
+                        <li class="headseat">
+                            <label>Tài xế</label>
+                        </li>
+                        <li class="headseat">
+                            <label>Tầng 1</label>
+                        </li>
+                        <li class="headseat">
+                            <label>Cửa vào</label>
+                        </li>
+                    </ol>
+                    <!--end header floor -->
+
+                    <!-- body floor -->
+                    <ol class="cabin floorbody ">
+                        <li class="column" >
+                            <ol class="seats" type="A" >
+                                <li class="seat" th:each=" seat : ${listSeatA1}" >
+                                    <input th:class="${seat.getSeatStatus().getStatus()}+' seat_ticket'"
+                                           type="checkbox"
+                                           th:id="${seat.getSeatName()}"
+                                           name="seat"
+                                           th:value="${seat.getId()}"
+                                           th:attr="data-chair-id=${seat.getId()} ,data-chair-name=${seat.getSeatName()}, data-status=${seat.getSeatStatus()}"
+                                    />
+                                    <label th:for="${seat.getSeatName()}" th:text="${seat.getSeatName()}"></label>
+                                </li>
+                            </ol>
+                        </li>
+                        <li class="column" >
+                            <ol class="seats" type="B">
+                                <li class="seat" th:each=" seat : ${listSeatB1}" >
+                                    <input th:class="${seat.getSeatStatus().getStatus()}+' seat_ticket'"
+                                           type="checkbox"
+                                           th:id="${seat.getSeatName()}"
+                                           name="seat"
+                                           th:value="${seat.getId()}"
+                                           th:attr="data-chair-id=${seat.getId()} ,data-chair-name=${seat.getSeatName()}, data-status=${seat.getSeatStatus()}"
+                                    />
+                                    <label th:for="${seat.getSeatName()}" th:text="${seat.getSeatName()}"></label>
+                                </li>
+                            </ol>
+                        </li>
+                        <li class="column" >
+                            <ol class="seats" type="C">
+                                <li class="seat" th:each=" seat : ${listSeatC1}" >
+                                    <input th:class="${seat.getSeatStatus().getStatus()}+' seat_ticket'"
+                                           type="checkbox"
+                                           th:id="${seat.getSeatName()}"
+                                           name="seat"
+                                           th:value="${seat.getId()}"
+                                           th:attr="data-chair-id=${seat.getId()} ,data-chair-name=${seat.getSeatName()}, data-status=${seat.getSeatStatus()}"
+                                    />
+                                    <label th:for="${seat.getSeatName()}" th:text="${seat.getSeatName()}"></label>
+                                </li>
+                            </ol>
+                        </li>
+                    </ol>
+                    <!--end body floor -->
+
+                    <!-- footer floor -->
+                    <ol class="row-1" >
+                        <li class="lastseat seat" th:each=" seat : ${listSeatD1}" >
+                            <input
+                                    th:class="${seat.getSeatStatus().getStatus()}+' seat_ticket'"
+                                    type="checkbox"
+                                    th:id="${seat.getSeatName()}"
+                                    name="seat"
+                                    th:value="${seat.getId()}"
+                                    th:attr="data-chair-id=${seat.getId()} ,data-chair-name=${seat.getSeatName()}, data-status=${seat.getSeatStatus()}"
+                            />
+                            <label th:for="${seat.getSeatName()}" th:text="${seat.getSeatName()}"></label>
+                        </li>
+
+                    </ol>
+                    <!--end footer floor -->
+                </div>
+                <!--END BUS floor1  -->
+
+
+                <!-- BUS floor2  -->
+                <div class="floor col-12 " id="floor2" style="display: none;">
+                    <!-- header floor -->
+                    <ol class="row-1">
+                        <li class="headseat">
+                            <label>Tài xế</label>
+                        </li>
+                        <li class="headseat">
+                            <label>Tầng 2</label>
+                        </li>
+                        <li class="headseat">
+                            <label>Cửa vào</label>
+                        </li>
+                    </ol>
+                    <!--end header floor -->
+
+                    <!-- body floor -->
+                    <ol class="cabin floorbody ">
+                        <li class="column">
+                            <ol class="seats" type="A">
+                                <li class="seat" th:each=" seat : ${listSeatA2}" >
+                                    <input th:class="${seat.getSeatStatus().getStatus()}+' seat_ticket'"
+                                           type="checkbox"
+                                           th:id="${seat.getSeatName()}"
+                                           name="seat"
+                                           th:value="${seat.getId()}"
+                                           th:attr="data-chair-id=${seat.getId()} ,data-chair-name=${seat.getSeatName()}, data-status=${seat.getSeatStatus()}"
+                                    />
+                                    <label th:for="${seat.getSeatName()}" th:text="${seat.getSeatName()}"></label>
+                                </li>
+
+                            </ol>
+                        </li>
+                        <li class="column">
+                            <ol class="seats" type="B">
+                                <li class="seat" th:each=" seat : ${listSeatB2}" >
+                                    <input th:class="${seat.getSeatStatus().getStatus()}+' seat_ticket'"
+                                           type="checkbox"
+                                           th:id="${seat.getSeatName()}"
+                                           name="seat"
+                                           th:value="${seat.getId()}"
+                                           th:attr="data-chair-id=${seat.getId()} ,data-chair-name=${seat.getSeatName()}, data-status=${seat.getSeatStatus()}"
+                                    />
+                                    <label th:for="${seat.getSeatName()}" th:text="${seat.getSeatName()}"></label>
+                                </li>
+
+                            </ol>
+                        </li>
+                        <li class="column">
+                            <ol class="seats" type="C">
+                                <li class="seat" th:each=" seat : ${listSeatC2}" >
+                                    <input th:class="${seat.getSeatStatus().getStatus()}+' seat_ticket'"
+                                           type="checkbox"
+                                           th:id="${seat.getSeatName()}"
+                                           name="seat"
+                                           th:value="${seat.getId()}"
+                                           th:attr="data-chair-id=${seat.getId()} ,data-chair-name=${seat.getSeatName()}, data-status=${seat.getSeatStatus()}"
+                                    />
+                                    <label th:for="${seat.getSeatName()}" th:text="${seat.getSeatName()}"></label>
+                                </li>
+                            </ol>
+                        </li>
+                    </ol>
+                    <!--end body floor -->
+
+                    <!-- footer floor -->
+                    <ol class="row-1" >
+                        <li class="lastseat seat" th:each=" seat : ${listSeatD2}" >
+                            <input th:class="${seat.getSeatStatus().getStatus()}+' seat_ticket'"
+                                   type="checkbox"
+                                   th:id="${seat.getSeatName()}"
+                                   name="seat"
+                                   th:value="${seat.getId()}"
+                                   th:attr="data-chair-id=${seat.getId()} ,data-chair-name=${seat.getSeatName()}, data-status=${seat.getSeatStatus()}"
+                            />
+                            <label th:for="${seat.getSeatName()}" th:text="${seat.getSeatName()}"></label>
+                        </li>
+
+                    </ol>
+                    <!--end footer floor -->
+                </div>
+                <!--END BUS floor2  -->
+            </div>
+
+            <div class="col-12 row node mt-4">
+                <div class="col-6">
+                    <div class="col-12 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class=" rounded col-3 border border-dark p-3" style="background-color: #bada55;"></div>
+                            <p class="m-0 ps-3"> Ghế đang chọn</p>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class=" rounded col-3 border border-dark p-3 " style="background-color: white;"></div>
+                            <p class="m-0 ps-3"> Ghế trống</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="col-12 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class=" rounded col-3 border border-dark p-3 " style="background-color: #bdbd00;"></div>
+                            <p class="m-0 ps-3"> Ghế đã được đặt</p>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class=" rounded col-3 border border-dark p-3" style="background-color: rgb(164, 35, 35);"></div>
+                            <p class="m-0 ps-3"> Ghế đã được bán </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--END BUS -->
+
+
+        <!-- Form điền thông tin khách hàng -->
+        <div class="col-3 ">
+
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label fw-semibold">Số điện thoại :</label>
+                <input type="text" class="form-control" id="phoneNumber" name="phonenumber" aria-describedby="emailHelp" required >
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label fw-semibold">Email :</label>
+                <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" required>
+                <div id="emailHelp" class="form-text">(Thông tin vé sẽ được gửi tới email)</div>
+            </div>
+            <div class="mb-3">
+                <label for="fullname" class="form-label fw-semibold">Họ và tên :</label>
+                <input type="text" class="form-control" name="fullname" id="fullname" required>
+            </div>
+            <div class="mb-3 ">
+                <p class="ms-0 fw-semibold">Chọn hình thức thanh toán</p>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="vnpay" name="pay" value="vnpay" >
+                    <label class="form-check-label" for="vnpay"> Thanh toán VNPAY </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="zalopay" name="pay" value="zalopay">
+                    <label class="form-check-label" for="zalopay"> Thanh toán ZALOPAY </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="momo" name="pay" value="momo">
+                    <label class="form-check-label" for="momo"> Thanh toán MOMO </label>
+                </div>
+
+                <input type="hidden" name="tripid" th:value="${tripCard.getTripId()}">
+                <input type="hidden" name="departureid" th:value="${departureLocation}">
+                <input type="hidden" name="arrivalid" th:value="${arrivalLocation}">
+                <input type="hidden" id="TotalAmount" name="totalamount" >
+            </div>
+            <button type="submit" class="btn btn-success col-5" onclick="return validateForm()">Thanh Toán</button>
+
+        </div>
+        <!-- END Form điền thông tin khách hàng -->
+
+
+        <!-- Thông tin chuyến xe  -->
+        <div class="col-3 d-inline-flex ">
+            <div class="card h-75">
+                <div class="card-body">
+                    <p class="card-text">Chuyến xe : <strong th:text="${tripCard.getTripNamel()}" ></strong></p>
+                    <p class="card-text">Loại xe : <strong th:text="${tripCard.getVehicleCategory()}"  ></strong></p>
+                    <p class="card-text">Thời gian chạy : <strong th:text="${tripCard.getDepartureDate()} +' , '+ ${tripCard.getStarTime()}" ></strong></p>
+                    <p class="card-text">Điểm đón : <strong th:text="${tripCard.getDepartureLocation()}"></strong> </p>
+                    <p class="card-text">Điểm trả : <strong th:text="${tripCard.getArrivalLocation()}"></strong> </p>
+                    <p class="film-info" th:attr="data-price=${tripCard.getPrice()}" ></p>
+                    <p class="card-text">Ghế đã chọn : <strong id="SelectedSeats"></strong> </p>
+                </div>
+
+                <div class="card-footer">
+                    <h5 class="card-title fw-bolder priceTicket"></h5>
+                </div>
+            </div>
+
+        </div>
+        <!-- END Thông tin chuyến xe  -->
+    </form>
+    <script>
+        const seats = document.querySelectorAll(".seat_ticket");
+        const selectedOptions = document.getElementById('SelectedSeats');
+        const totalAmount = document.getElementById('TotalAmount');
+        var filmInfoElement = document.querySelector(".film-info");
+
+        var giaPhim = parseFloat(filmInfoElement.getAttribute("data-price"));
+        var priceElement = document.querySelector(".priceTicket");
+        var soGheDaChon = 0;
+        var tongTien = 0;
+        let selectedSeat = [];
+
+        seats.forEach((checkbox) => {
+            checkbox.addEventListener('change', function() {
+                const checkboxValue = checkbox.getAttribute("data-chair-name");
+                if (checkbox.checked) {
+                    selectedSeat.push(checkboxValue);
+                } else {
+                    const index = selectedSeat.indexOf(checkboxValue);
+                    if (index !== -1) {
+                        selectedSeat.splice(index, 1);
+                    }
+                }
+                selectedOptions.textContent =''+selectedSeat.join(', ');
+
+
+                soGheDaChon = selectedSeat.length;
+
+                if (soGheDaChon > 0) {
+                    tongTien = giaPhim * soGheDaChon;
+                    priceElement.textContent = "Tổng Tiền: " + tongTien + " VNĐ";
+                    totalAmount.value = tongTien;
+                } else {
+                    priceElement.textContent = "Tổng Tiền: 0 VNĐ";
+                    tongTien = 0;
+                    totalAmount.value = tongTien;
+                }
+            });
+        });
+
+        function showFloor(formId) {
+            // Hide all forms
+            var forms = document.getElementsByClassName('floor');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].style.display = 'none';
+            }
+
+            // Show the selected form
+            var selectedForm = document.getElementById(formId);
+            if (selectedForm) {
+                selectedForm.style.display = 'block';
+                if (formId == "floor1") {
+                    document.getElementById('fl1').style.borderBottom = 'white';
+                    document.getElementById('fl2').style.borderBottom = '5px solid #d8d8d8';
+                } else if ((formId == "floor2")) {
+                    document.getElementById('fl1').style.borderBottom = '5px solid #d8d8d8';
+                    document.getElementById('fl2').style.borderBottom = 'white';
+                }
+
+            }
+        }
+
+
+        function validateForm() {
+            var isChecked = false;
+
+            // Lặp qua mỗi checkbox ghế
+            for (var i = 0; i < seats.length; i++) {
+                if (seats[i].checked) {
+                    isChecked = true;
+                    break; // Nếu có ít nhất một checkbox được chọn, thoát khỏi vòng lặp
+                }
+            }
+
+            // Nếu không có checkbox nào được chọn, hiển thị thông báo và ngăn chặn việc submit form
+            if (!isChecked) {
+                alert("Vui lòng chọn ghế .");
+                return false; // Ngăn chặn việc submit form
+            }
+
+            return true; // Cho phép submit form nếu có ít nhất một checkbox được chọn
+        }
+    </script>
+</div>
+
+
+</body>
+
+</html>

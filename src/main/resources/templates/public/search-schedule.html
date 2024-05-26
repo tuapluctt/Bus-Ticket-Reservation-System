@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="public/layout-static.html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <style>
+        @media (min-width: 992px) {
+            #introCarousel {
+                margin-top: 15px;
+            }
+
+            #introCarousel,
+            .carousel-inner,
+            .carousel-item,
+            .carousel-item.active {
+                height: 70vh;
+            }
+        }
+
+        #introCarousel .carousel-item {
+            background-image: url('/images/banenr2.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+        }
+
+        .text-theem {
+            color: #0D572B !important;
+        }
+
+        .choosedate {
+            border-top-style: hidden;
+            border-right-style: hidden;
+            border-left-style: hidden;
+            border-bottom-style: groove;
+            color: rgb(0, 0, 0);
+        }
+
+        .choosedate:focus {
+            outline: none;
+            border: 0;
+            box-shadow: none;
+            background-color: #F8F9FA;
+        }
+
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="introCarousel" class="carousel slide carousel-fade shadow-2-strong mt-0" >
+        <div class="carousel-item active">
+            <div class="container d-flex justify-content-center d-flex align-items-center h-100 ">
+                <div class="m-5 text-white text-center w-75" data-mdb-theme="dark">
+                    <h1 class="mb-3 text-theem ">HÀNH TRÌNH CÙNG XURYBUS </h1>
+                    <script>
+                        function validateForm() {
+                            var stop1 = document.getElementById("departure");
+                            var stop2 = document.getElementById("destination");
+                            var inputDate = new Date(document.getElementById('date').value);
+
+                            // Lấy ngày hiện tại
+                            var currentDate = new Date();
+
+                            //So sánh ngày trong input với ngày hiện tại
+                            if (inputDate <= currentDate) {
+                                // Nếu ngày trong input nhỏ hơn ngày hiện tại
+                                alert('Thời gian đã là quá khứ.');
+                            }
+                            if (stop1.value === "" || stop2.value === "") {
+                                alert("Vui lòng chọn đầy đủ thông tin.");
+                                return false;
+                            }
+
+                            return true;
+                        }
+                    </script>
+                    <form class="row row-cols-lg-auto g-3 align-items-center m-0 bg-light"
+                          action="#" th:action="@{/public/submit}" method="post"
+                          onsubmit="return validateForm()">
+
+                        <div class="w-25 m-0 border-end ">
+                            <label class="visually-hidden">Preference</label>
+                            <select id="departure" class="form-select-lg form-control-plaintext col-3" name="departure" >
+                                <option th:value="${deparTure != null} ? ${deparTure.id}  : ''"
+                                        th:text="${deparTure != null} ? ${deparTure.stopName}  : 'chọn nơi đi'"
+                                ></option>
+
+                                <optgroup th:each="tinhTp : ${listTinhTp}" th:label="${tinhTp.name}">
+                                    <option th:each="stop : ${tinhTp.getStops()}"
+                                            th:value="${stop.id}"
+                                            th:text="${stop.stopName}">
+                                    </option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="w-25 m-0 border-end ">
+                            <label class="visually-hidden">Preference</label>
+                            <select  id="destination"  class="form-select-lg form-control-plaintext " name="destination" >
+                                <option th:value="${destinaTion != null} ?  ${destinaTion.id} : ''"
+                                        th:text="${destinaTion != null} ? ${destinaTion.stopName} : 'chọn nơi đến'">
+                                 </option>
+                                <optgroup th:each="tinhTp : ${listTinhTp}" th:label="${tinhTp.name}">
+                                    <option th:each="stop : ${tinhTp.getStops()}"
+                                            th:value="${stop.id}"
+                                            th:text="${stop.stopName}">
+                                    </option>
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <div class="w-25  m-0 border-end">
+                            <div class=" input-group-lg date row d-flex align-items-center p-1" id="datepicker">
+                                <input id="date"  type="text" class="choosedate form-control form-control-plaintext w-75" name="departureDate"
+                                       placeholder="Chọn thời gian" required = "required"
+                                       th:value="${departureDate != null} ?  ${departureDate} : ''">
+                                <span class="input-group-append w-25 h-100">
+                        <span class="input-group-text   bg-white d-block">
+                        <i class="bi bi-calendar"></i>
+                      </span>
+                    </span>
+                            </div>
+                        </div>
+
+                        <div class="w-25 m-0">
+                            <button type="submit"
+                                    class="btn btn-success btn-lg m-2">Tìm kiếm
+                            </button>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datepicker').datepicker();
+            });
+        </script>
+    </div>
+
+
+    <div class="container my-3 ">
+        <div class="row  justify-content-center">
+            <div th:if="${my_error}" class="alert alert-danger col-6 justify-content-center">
+                <span th:text="${my_error}"> </span>
+            </div>
+            <div class="col-lg-8" th:if="${ListTrip != null}" >
+                <div class="card shadow-sm border-1 rounded-lg my-4" style="background-color: #FAFAF5" th:each=" tripcard : ${ListTrip}">
+                    <div class="row g-0 m-2 " style="height: 160px">
+                        <div class="col-md-3 h-100">
+                            <img src="/images/logo-car.png" class="img-fluid rounded h-100 " alt="...">
+                        </div>
+
+                        <div class="h-100 col-md-6">
+                            <div class="h-100 px-4 d-flex justify-content-between flex-column">
+                                <div class="mb-4">
+                                    <div class="d-flex flex-row ">
+                                        <div class=""><h5 class="m-0" th:text="${tripcard.getTripNamel()}"></h5></div>
+                                    </div>
+                                    <p class="text-opacity-50"  th:text="'Loại xe :  ' +${tripcard.getVehicleCategory()}"></p>
+                                </div>
+
+                                <div class="d-flex flex-row ">
+                                    <div >
+                                        <h4 class="text-theem m-0"  th:text="${tripcard.getDepartureTime()}"></h4>
+                                        <p class="m-0"  th:text="${tripcard.getDepartureLocation()}"></p>
+                                    </div>
+                                    <hr class=" my-3 m-0 mx-3 " style="width: 100px">
+                                    <div >
+                                        <h4 class="text-theem m-0"  th:text="${tripcard.getArrivalTime()}"></h4>
+                                        <p class="m-0"  th:text="${tripcard.getArrivalLocation()}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 d-flex justify-content-between flex-column">
+                            <p class="fs-5 text-end fw-semibold"  th:text="${#numbers.formatCurrency(tripcard.getPrice())}"> <span class="text-decoration-underline"> đ </span></p>
+
+                            <div class="col-12">
+                                <p class="text-opacity-50 text-end my-2"  th:text="'Còn '+${tripcard.getEmptySeats()+' chỗ'}"></p>
+                                <a  th:href="@{/public/seat(tripId=${tripcard.tripId},departureLocation=${deparTure.getId()},arrivalLocation=${destinaTion.getId()})}" class="btn btn-success fw-bold w-100">Đặt vé</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+</body>
+</html>

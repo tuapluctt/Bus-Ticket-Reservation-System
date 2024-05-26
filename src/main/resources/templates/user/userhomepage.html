@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorate="user/layout_user.html">
+<head >
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+
+            background-color: #f7f6f6;
+        }
+        .name{
+            font-size: 18px;
+        }
+
+
+        .fw-500{
+            font-weight: 500 !important;
+        }
+
+        .rate{
+
+            border-bottom-right-radius: 12px;
+            border-bottom-left-radius: 12px;
+
+        }
+
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center
+        }
+
+        .rating>input {
+            display: none
+        }
+        .rating>label {
+            position: relative;
+            width: 1em;
+            font-size: 30px;
+            font-weight: 300;
+            color: #FFD600;
+            cursor: pointer
+        }
+        .rating>label::before {
+            content: "\2605";
+            position: absolute;
+            opacity: 0
+        }
+        .rating>label:hover:before,
+        .rating>label:hover~label:before {
+            opacity: 1 !important
+        }
+        .rating>input:checked~label:before {
+            opacity: 1
+        }
+        .rating:hover>input:checked~label:before {
+            opacity: 0.4
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div class="container " layout:fragment="content">
+
+
+    <div class="" th:if="${bookings != null}">
+        <div th:if="${my_error}" class="alert alert-success col-6 w-100">
+            <span th:text="${my_error}"> </span>
+        </div>
+        <div class="col-lg-9 mx-auto" th:each="booking : ${bookings}" >
+            <div class="card shadow-sm border-1 rounded-lg my-4" style="background-color: #FAFAF5" >
+                <div class="row g-0 m-2 " style="height: 170px">
+                    <div class="col-md-3 h-100">
+                        <img id="qrcode" class="qrcode img-fluid rounded h-100 " alt="QR CODE" th:data-booking-id="${booking.getId()}">
+                    </div>
+
+                    <div class="h-100 col-md-5 ps-1">
+                        <p class="card-text m-0">Số điện thoại : <strong th:text="${booking.getPhoneNumber()}"> </strong></p>
+                        <p class="card-text m-0">Chuyến xe : <strong th:text="${booking.getTrip().getName()}"> </strong></p>
+                        <p class="card-text m-0">Thời gian : <strong th:text="${booking.getTrip().getStartDate()}"></strong></p>
+                        <p class="card-text m-0">Điểm đón : <strong th:text="${booking.getDeparture().stopName}">  </strong></p>
+                        <p class="card-text m-0">Điểm trả : <strong th:text="${booking.getArrival().stopName}"> </strong></p>
+                        <p class="card-text m-0">Số ghế :
+                            <strong>
+                                <span th:each="ticket : ${booking.getTickets()}">
+                                        <span th:text="${ticket.getSeatName() != null ? ticket.getSeatName() : '&nbsp;'}"></span>,
+                                    </span>
+                            </strong>
+                        </p>
+                    </div>
+
+                    <div class="col-md-4 d-flex justify-content-between flex-column">
+                        <p class="fs-5 text-end fw-semibold"  th:text="${booking.getTrip().status.getDisplayName()}"></p>
+
+                        <div class="col-12 ">
+                            <p class="text-opacity-50 text-end my-2" th:with="quantity=${booking.getTickets().size()}">
+                                <span  th:with="pricePerSeat=${booking.getTrip().getPriceList().getPrice()}"> Thành tiền :
+                                    <span th:text="${#numbers.formatCurrency(quantity * pricePerSeat)}"> </span>
+                                </span> </p>
+                            <!-- Button rating modal -->
+                            <button type="button"  class="btn btn-success fw-bold col-6 float-end "
+                                data-bs-toggle="modal" data-bs-target="#ratingModal"
+                                    th:attr="
+                                    data-booking-id=${booking.getId()},
+                                    data-trip-name=${booking.getTrip().getName()},
+                                    data-trip-time=${booking.getTrip().getStartDate()}"
+                                th:classappend="${booking.isRated() || booking.getTrip().status.getStatus() eq  'BOOKED' ? 'disabled ' : ''}"
+                                th:text="${booking.isRated() ? 'Đã đánh giá' : 'Đánh giá'}"
+                            ></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+<!--         Modal add one time modal-->
+        <form action="#" th:action="@{/user/rating}" method="post">
+            <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Đánh Giá chuyến đi</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input hidden="hidden" id="bookingId" name="bookingId" >
+                            <p class="card-text m-0" id="tripName" > <strong > </strong></p>
+                            <p class="card-text m-0" id="time"  > <strong ></strong></p>
+                            <div class="location mt-4">
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="describe" placeholder="Chi tiết đánh giá"></textarea>
+                            </div>
+                            <div class="rate bg-success py-3 text-white mt-3">
+                                <h6 class="mb-0 text-center">Chất lượng sản phẩm</h6>
+                                <div class="rating">
+                                    <input type="radio" name="rating" value="5" id="5"><label for="5">☆</label>
+                                    <input type="radio" name="rating" value="4" id="4"><label for="4">☆</label>
+                                    <input type="radio" name="rating" value="3" id="3"><label for="3">☆</label>
+                                    <input type="radio" name="rating" value="2" id="2"><label for="2">☆</label>
+                                    <input type="radio" name="rating" value="1" id="1"><label for="1">☆</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Trở lại</button>
+                            <button type="submit" class="btn btn-success">Hoàn thành</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const qrCodeElements = document.querySelectorAll('.qrcode');
+
+            qrCodeElements.forEach(function(imgElement) {
+                const bookingId = imgElement.getAttribute('data-booking-id');
+
+                imgElement.src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + bookingId;
+            });
+
+
+
+
+            var modal = document.getElementById('ratingModal');
+
+            modal.addEventListener('shown.bs.modal', function(event) {
+                var button = event.relatedTarget;
+                var bookingIdText = button.getAttribute('data-booking-id');
+                var tripNameText = button.getAttribute('data-trip-name');
+                var timeText = button.getAttribute('data-trip-time');
+
+                var tripName = document.getElementById('tripName');
+                var bookingId = document.getElementById('bookingId');
+                var time = document.getElementById('time');
+
+
+                tripName.innerText = "Chuyến xe : " + tripNameText;
+                time.innerText = "Thời gian : " + timeText;
+                bookingId.value = bookingIdText;
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

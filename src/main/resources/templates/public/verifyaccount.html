@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../css/styles.css" rel="stylesheet" />
+</head>
+<body>
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main >
+            <div class="container my-auto ">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card border-0 rounded-lg mt-5">
+                            <div class="card-body">
+                                <div th:if="${notification}" >
+                                    <h3 class="text-center font-weight-light my-4" th:text="${notification}"></h3>
+                                    <img src="/images/phaoo.png" class="rounded mx-auto d-block" width="300px">
+                                </div>
+                            </div>
+                            <div class="card-footer text-center py-3">
+                                <div>
+                                    <a class="btn btn-success" th:if="${phonenumber}" th:href="@{/register/regenerate-otp(phonenumber=${phonenumber})}">gửi lại mã xác thực</a>
+                                    <a class="btn btn-success" th:unless="${phonenumber}" th:href="@{/login}">Click here to Login</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="layoutAuthentication_footer">
+        <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid px-4">
+                <div class="d-flex align-items-center justify-content-between small">
+                    <div class="text-muted">© 2023 Copyright : XURYBUS by HoangVanTu
+                    </div>
+                    <div>
+                        <a href="#">Privacy Policy</a>
+                        &middot;
+                        <a href="#">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="../js/scripts.js"></script>
+</body>
+</html>
