@@ -194,7 +194,7 @@
                                     <td th:attr="rowspan=${routeInformation.getPriceLists().size()} + 1" >Giá vé</td>
                                 </tr>
                                 <tr th:each="price : ${routeInformation.getPriceLists()}">
-                                    <td th:text="${price.getCategory().getName()}" ></td>
+                                    <td th:text="${price.getName()}" ></td>
                                     <td th:text="${#numbers.formatCurrency(price.getPrice())}"></td>
                                 </tr>
 
@@ -243,7 +243,7 @@
 
                     <div class=" my-5 col-md-5 gx-5 d-flex justify-content-center align-items-center" style="border:3px dashed #ffffff ;">
                         <div class="px-2 py-5 col-6 ">
-                            <a class=" btn col-12 bg-success text-white p-3 fw-bold" href="#" role="button"><i class="bi bi-arrow-right-circle-fill pe-2"></i>ĐẶT VÉ TRỰC TUYẾN</a>
+                            <a class=" btn col-12 bg-success text-white p-3 fw-bold" th:href="@{/public/schedule}" role="button"><i class="bi bi-arrow-right-circle-fill pe-2"></i>ĐẶT VÉ TRỰC TUYẾN</a>
                         </div>
                     </div>
                 </div>

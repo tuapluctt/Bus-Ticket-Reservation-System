@@ -5,7 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Booking;
+import vn.hvt.spring.BusTicketReservationSystem.entity.Trip;
 import vn.hvt.spring.BusTicketReservationSystem.repository.BookingReposity;
+import vn.hvt.spring.BusTicketReservationSystem.repository.StopRepository;
+import vn.hvt.spring.BusTicketReservationSystem.repository.TripRepository;
 import vn.hvt.spring.BusTicketReservationSystem.service.BookingSevice;
 import vn.hvt.spring.BusTicketReservationSystem.service.TripSevice;
 import vn.hvt.spring.BusTicketReservationSystem.util.QRCodeGenerator;
@@ -20,7 +23,7 @@ public class BusTicketReservationSystemApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(BookingSevice bookingSevice){
+	public CommandLineRunner commandLineRunner(TripRepository tripRepository, StopRepository stopRepository){
 		return runner -> {
 //			List<Booking> booking = bookingSevice.searchBookingsByKeyword("0971025649");
 //
@@ -65,10 +68,10 @@ public class BusTicketReservationSystemApplication {
 //				System.out.println("moa fuck " +seat.getSeatName());
 //
 //			});
-
+//
 //			List<Trip> trips = tripRepository.findAll();
 //
-//			trips.forEach(trip ->{
+//			trips.forEach(trip -> {
 //				String h1 =stopRepository.findFirstStopNameByScheduleIdMax(trip.getSchedule().getId());
 //				System.out.println(h1);
 //				String h2 =stopRepository.findFirstStopNameByScheduleIdMin(trip.getSchedule().getId());
@@ -76,9 +79,8 @@ public class BusTicketReservationSystemApplication {
 //				trip.setName(h1+ " - "+h2);
 //
 //				tripRepository.save(trip);
-
+//
+//			});
 		};
 	}
-
-
 }

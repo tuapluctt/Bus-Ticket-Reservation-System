@@ -146,12 +146,12 @@ public class AdminController {
                     .filter(route1 -> route1.getId() == route)
                     .findFirst()
                     .get();
-
-
             // Tìm theo cả hai điều kiện date và route nếu cả hai điều kiện đều tồn tại
         } else if (date != null && route >= 0) {
 
+            System.out.println(" day là loi của tìm theo date");
             if(route == 0){
+                System.out.println(" day là loi của tìm theo route = 0");
                 List<TripAdminDTO> listTrip = tripSevice.searchByDate(date);
                 model.addAttribute("listTrip",listTrip);
             }else{
@@ -164,20 +164,24 @@ public class AdminController {
             }
 
         } else {
+
+            System.out.println(" day là loi của tìm BANTUMLUON ");
             Page<TripAdminDTO> listTrip = tripSevice.getAll(pageNo);
             model.addAttribute("listTrip",listTrip);
 
-            int totalPages = listTrip.getTotalPages();
-            int range = 1;
-            // Tính toán trang bắt đầu và kết thúc
-            int startPage = Math.max(1, pageNo - range);
-            int endPage = Math.min(totalPages, pageNo + range);
+            if (listTrip != null) {
+                int totalPages = listTrip.getTotalPages();
+                int range = 1;
+                // Tính toán trang bắt đầu và kết thúc
+                int startPage = Math.max(1, pageNo - range);
+                int endPage = Math.min(totalPages, pageNo + range);
 
 
-            model.addAttribute("currentPage", pageNo);
-            model.addAttribute("totalPages", totalPages);
-            model.addAttribute("startPage", startPage);
-            model.addAttribute("endPage", endPage);
+                model.addAttribute("currentPage", pageNo);
+                model.addAttribute("totalPages", totalPages);
+                model.addAttribute("startPage", startPage);
+                model.addAttribute("endPage", endPage);
+            }
         }
 
         model.addAttribute("date",date);

@@ -61,16 +61,14 @@
                         function validateForm() {
                             var stop1 = document.getElementById("departure");
                             var stop2 = document.getElementById("destination");
-                            var inputDate = new Date(document.getElementById('date').value);
 
-                            // Lấy ngày hiện tại
-                            var currentDate = new Date();
+                            $('#date').datepicker({
+                                format: 'yyyy-mm-dd',
+                                autoclose: true, // Tự đóng Datepicker khi người dùng chọn ngày
+                                todayHighlight: true, // Highlight ngày hiện tại
+                                startDate: '0d' // Không cho phép chọn ngày quá khứ
+                            });
 
-                            //So sánh ngày trong input với ngày hiện tại
-                            if (inputDate <= currentDate) {
-                                // Nếu ngày trong input nhỏ hơn ngày hiện tại
-                                alert('Thời gian đã là quá khứ.');
-                            }
                             if (stop1.value === "" || stop2.value === "") {
                                 alert("Vui lòng chọn đầy đủ thông tin.");
                                 return false;

@@ -25,7 +25,7 @@
         <div class="col-md-6">
           <label class="form-label fw-semibold">Xe</label>
           <select id="carSelect" class="form-select" aria-label="Default select example"  th:field="*{carId}" th:errorclass="is-invalid">
-            <option value="" th:selected="false"> Chọn giá </option>
+            <option value="" th:selected="false"> Chọn xe </option>
             <option th:each="car : ${carList}"
                     th:value="${car.id}"
                     th:text="${car.id} + ' - ('  + ${car.name} + ')'"
