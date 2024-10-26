@@ -55,8 +55,6 @@ public class SecurityConfiguration {
         ).formLogin(
                 form->form.loginPage("/login")
                         .loginProcessingUrl("/authenticateTheUser")
-//                        .failureForwardUrl("nn") login failed thì đi tới url này
-//                        .successForwardUrl("jj")
                         .failureHandler(authenticationFailureHandler())
                         .successHandler(authenticationSuccessHandler())
                         .permitAll()

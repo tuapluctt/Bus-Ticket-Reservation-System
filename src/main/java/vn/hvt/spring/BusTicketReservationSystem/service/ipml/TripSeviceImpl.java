@@ -115,7 +115,7 @@ public class TripSeviceImpl implements TripSevice {
         TripCard tripCard = new TripCard();
         // Id
         tripCard.setTripId(trip.getId());
-        System.out.println("fuck "+trip.getName());
+        System.out.println(" "+trip.getName());
 
         // name
         tripCard.setTripNamel(getNameTripcard(trip.getSchedule().getId()));
@@ -149,9 +149,9 @@ public class TripSeviceImpl implements TripSevice {
 
         tripCard.setVehicleCategory(trip.getCar().getCategory().getName());
 
-        System.out.println("fuck "+tripCard.toString());
+        System.out.println(tripCard.toString());
 
-        System.out.println("fuck "+tripCard.getEmptySeats());
+        System.out.println(tripCard.getEmptySeats());
         return tripCard;
     }
 
