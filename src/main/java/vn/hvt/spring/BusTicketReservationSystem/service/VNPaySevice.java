@@ -17,7 +17,7 @@ public class VNPaySevice {
     }
 
 
-    public String createpayment(long send_amount,String productName ,int bookingId,String paymentType , HttpServletRequest request) throws UnsupportedEncodingException {
+    public String createpayment(long send_amount, String bookingId, HttpServletRequest request) throws UnsupportedEncodingException {
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";
@@ -37,13 +37,12 @@ public class VNPaySevice {
 
         vnp_Params.put("vnp_BankCode", bankCode);
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-        vnp_Params.put("vnp_OrderInfo", productName);
+        vnp_Params.put("vnp_OrderInfo", bookingId);
         vnp_Params.put("vnp_OrderType", orderType);
 
         vnp_Params.put("vnp_Locale", "vn");
 
-
-        String vnp_Returnurl = applicationUrl(request) + "/public/payment-return-vnpay?bookingId=" + bookingId ;
+        String vnp_Returnurl = applicationUrl(request) + Config.vnp_ReturnUrl;
         vnp_Params.put("vnp_ReturnUrl", vnp_Returnurl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
