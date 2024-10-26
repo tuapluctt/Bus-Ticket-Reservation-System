@@ -11,13 +11,12 @@ import vn.hvt.spring.BusTicketReservationSystem.service.RouteSevice;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/")
 public class HomeController {
 
     @Autowired
     RouteSevice routeSevice;
 
-    @GetMapping()
+    @RequestMapping(value = "/")
     public String showHomePage(Model model){
         List<Route> routes = routeSevice.findAll();
 

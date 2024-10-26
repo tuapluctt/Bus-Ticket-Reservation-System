@@ -45,7 +45,7 @@ public class TripController {
 
         String myError = "";
 
-        // dữ lại điểm đi và điểm đến mà người dùng đã chon
+        // giữ lại điểm đi và điểm đến mà người dùng đã chon
         Stop deparTure = stopSevice.findById(departure);
         Stop destinaTion = stopSevice.findById(destination);
 
