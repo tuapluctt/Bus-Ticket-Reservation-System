@@ -65,10 +65,10 @@ public class TripSeviceImpl implements TripSevice {
          // tìm kiếm lịch trinhf phù hợp
         List<Schedule> scheduleId = scheduleRopository.findMatchingSchedules(fromId,toId);
         scheduleId.forEach(schedule ->{
-            System.out.println("fuck "+ schedule.getId() );
+            System.out.println("schedule ID :  "+ schedule.getId() );
         });
 
-        System.out.println("fuck "+ scheduleId.size() );
+        System.out.println("so luong cho troong :   "+ scheduleId.size() );
 
 
 
@@ -78,14 +78,12 @@ public class TripSeviceImpl implements TripSevice {
         //  chuyến xe có lịch trình trên và thời gian (ngày : giờ)
         scheduleId.forEach(schedule -> {
             List<Trip> trip = tripRepository.findTripsByScheduleAndDepartureDateTimeGreaterThan(schedule.getId(),date);
-            System.out.println("fuck "+ trip.size() );
             trips.addAll(trip);
         });
 
-        System.out.println("fuck "+ trips.size() );
 
         trips.forEach(trip -> {
-            System.out.println("fuck "+trip.getName());
+            System.out.println("trip name :  "+trip.getName());
         });
 
         // tìm kiếm các chuyến xe có lịch trình trên và thời gian (ngày giờ)
