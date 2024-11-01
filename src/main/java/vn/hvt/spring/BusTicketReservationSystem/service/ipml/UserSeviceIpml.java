@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Role;
 import vn.hvt.spring.BusTicketReservationSystem.entity.User;
 import vn.hvt.spring.BusTicketReservationSystem.DTO.RegisterUser;
+import vn.hvt.spring.BusTicketReservationSystem.exception.AccountNotVerifiedException;
 import vn.hvt.spring.BusTicketReservationSystem.repository.RoleRepository;
 import vn.hvt.spring.BusTicketReservationSystem.repository.UserRepository;
 import vn.hvt.spring.BusTicketReservationSystem.service.UserSevice;
@@ -49,15 +50,20 @@ public class UserSeviceIpml implements UserSevice {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-       User user = userRepository.findByPhoneNumber(phone);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException, AccountNotVerifiedException {
+       User user = userRepository.findByEmail(email);
        if(user==null){
            throw new UsernameNotFoundException("invalid Username or password");
        }
        if(!user.isEnable()){
-           throw new UsernameNotFoundException("invalid Username or password");
+           throw new AccountNotVerifiedException("account is not verified");
        }
-       return new org.springframework.security.core.userdetails.User(user.getPhoneNumber(), user.getPassWord(), rolesToAuthorities(user.getRoles()));
+       return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassWord(), rolesToAuthorities(user.getRoles()));
     }
 
     private Collection<? extends GrantedAuthority> rolesToAuthorities(Collection<Role> roles){
@@ -93,24 +99,26 @@ public class UserSeviceIpml implements UserSevice {
     }
 
     @Override
-    public boolean verifyAccount(String phoneNumber, String token) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
-
-        // kiểm tra otp khớp hay không . và xem hiệu lục token đã hết hạn hay chưa
-        if (user.getActivationCode().equals(token)
-                && Duration.between(user.getOtpGeneratedTime(),
-                LocalDateTime.now()).getSeconds() < (24 * 60 * 60)
-                ) {
-            user.setEnable(true);
-            userRepository.save(user);
-            return true;
+    public boolean verifyAccount(String email, String token) {
+        User user = userRepository.findByEmail(email);
+        //kiểm tra tài khoản đã tônf tại hay chưa
+        if(user != null){
+            // kiểm tra otp khớp hay không . và xem hiệu lục token đã hết hạn hay chưa
+            if (user.getActivationCode().equals(token)
+                    && Duration.between(user.getOtpGeneratedTime(),
+                    LocalDateTime.now()).getSeconds() < (24 * 60 * 60)
+            ) {
+                user.setEnable(true);
+                userRepository.save(user);
+                return true;
+            }
         }
-
         return false;
+
     }
 
-    public void regenerateOtp(String phoneNumber) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
+    public void regenerateOtp(String email) {
+        User user = userRepository.findByEmail(email);
 
         user.setActivationCode(RandomCode.getSoNgauNhien());
         user.setOtpGeneratedTime(LocalDateTime.now());
@@ -120,11 +128,5 @@ public class UserSeviceIpml implements UserSevice {
         userRepository.save(user);
     }
 
-    public boolean isEnable(String phoneNumber) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
-        if(user != null){
-            return user.isEnable();
-        }
-        return false;
-    }
+
 }

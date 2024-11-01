@@ -19,8 +19,8 @@ public interface BookingReposity extends JpaRepository<Booking,Integer> {
 
     Page<Booking> findAllByOrderByDateCreatedDesc(Pageable pageable);
 
-    @Query("SELECT b FROM Booking b WHERE b.phoneNumber = :phoneNumber AND b.status IN (:statuses)")
-    List<Booking> findByPhoneNumberAndStatusIn(@Param("phoneNumber") String phoneNumber, @Param("statuses") List<BookingStatus> statuses);
+    @Query("SELECT b FROM Booking b WHERE b.email = :email AND b.status IN (:statuses)")
+    List<Booking> findByEmailAndStatusIn(@Param("email") String email, @Param("statuses") List<BookingStatus> statuses);
 
     List<Booking> findByPhoneNumber(String phoneNumber);
 
@@ -37,4 +37,5 @@ public interface BookingReposity extends JpaRepository<Booking,Integer> {
             "LOWER(b.phoneNumber) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Booking> searchByKeyword(@Param("keyword") String keyword,Pageable pageable);
+
 }

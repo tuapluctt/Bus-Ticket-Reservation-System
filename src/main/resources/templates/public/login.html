@@ -22,16 +22,16 @@
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
                                     <div class="card-body">
-                                        <div th:if="${error != null}">
-                                            <span style="color: red" > Tài khoản hoặc mật khẩu không chính xác</span>
+                                        <div th:if="${error}" class="alert alert-danger">
+                                            <span style="color: red" th:text="${error}" > </span>
                                         </div>
-                                        <form th:action="@{authenticateTheUser}" method="post">
+                                        <form th:action="@{/login}" method="post">
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="inputSDT" name="username" type="text"  />
-                                                <label for="inputSDT">Phone number</label>
+                                                <input class="form-control" id="inputSDT" name="username" type="text" required />
+                                                <label for="inputSDT">Email</label>
                                             </div>
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" name="password" id="inputPassword" type="password"  />
+                                                <input class="form-control" name="password" id="inputPassword" type="password" required />
                                                 <label for="inputPassword">Password</label>
                                             </div>
                                             <div class="form-check mb-3">

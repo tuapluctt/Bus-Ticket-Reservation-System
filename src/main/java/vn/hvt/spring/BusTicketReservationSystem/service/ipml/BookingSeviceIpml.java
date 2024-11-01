@@ -73,9 +73,9 @@ public class BookingSeviceIpml implements BookingSevice {
     }
 
     @Override
-    public List<Booking> findPaidOrBookedByPhoneNumber(String phoneNumber) {
+    public List<Booking> findPaidOrBookedByEmail(String email) {
         List<BookingStatus> statuses = Arrays.asList(BookingStatus.PAID, BookingStatus.BOOKED);
-        return bookingReposity.findByPhoneNumberAndStatusIn(phoneNumber, statuses);
+        return bookingReposity.findByEmailAndStatusIn(email, statuses);
     }
 
 

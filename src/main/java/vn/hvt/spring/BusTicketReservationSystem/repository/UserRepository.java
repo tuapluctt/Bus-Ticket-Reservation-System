@@ -8,4 +8,6 @@ import vn.hvt.spring.BusTicketReservationSystem.entity.User;
 public interface UserRepository extends JpaRepository<User,Integer> {
     public User findByFullName(String fullName);
     public User findByPhoneNumber(String phoneNumber);
+
+    public User findByEmail(String email);
 }

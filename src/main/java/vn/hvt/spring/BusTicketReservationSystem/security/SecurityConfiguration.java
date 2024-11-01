@@ -1,16 +1,20 @@
 package vn.hvt.spring.BusTicketReservationSystem.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import vn.hvt.spring.BusTicketReservationSystem.service.UserSevice;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfiguration {
 
     @Bean
@@ -32,10 +36,9 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public CustomAuthenticationFailureHandler authenticationFailureHandler() {
+    public AuthenticationFailureHandler authenticationFailureHandler() {
         return new CustomAuthenticationFailureHandler();
     }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -43,19 +46,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                 configurer->configurer
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/sandbox.vnpayment.vn/**").permitAll()
-                        .requestMatchers("/css/**").permitAll()
-                        .requestMatchers("/icons/**").permitAll()
-                        .requestMatchers("/images/**").permitAll()
-                        .requestMatchers("/js/**").permitAll()
-                        .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/register/**").permitAll()
-                        .requestMatchers("/").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
         ).formLogin(
                 form->form.loginPage("/login")
-                        .loginProcessingUrl("/authenticateTheUser")
-                        .failureHandler(authenticationFailureHandler())
+                       .failureHandler(authenticationFailureHandler())
                         .successHandler(authenticationSuccessHandler())
                         .permitAll()
         ).logout(

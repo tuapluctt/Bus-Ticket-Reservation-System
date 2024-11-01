@@ -55,7 +55,7 @@ public class EmailSeviceIpml implements EmailSevice {
     public void sendHtmlEmail(String phonenumber, String to, String token) {
         try {
             Context context = new Context();
-            context.setVariables(Map.of("name", phonenumber, "url", EmailUtils.getVerificationUrl(phonenumber,token)));
+            context.setVariables(Map.of("name", to, "url", EmailUtils.getVerificationUrl(to,token)));
             String text = templateEngine.process(EMAIL_TEMPLATE, context);
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);

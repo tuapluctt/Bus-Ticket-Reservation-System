@@ -21,8 +21,8 @@
                             </div>
                             <div class="card-footer text-center py-3">
                                 <div>
-                                    <a class="btn btn-success" th:if="${phonenumber}" th:href="@{/register/regenerate-otp(phonenumber=${phonenumber})}">gửi lại mã xác thực</a>
-                                    <a class="btn btn-success" th:unless="${phonenumber}" th:href="@{/login}">Click here to Login</a>
+                                    <a class="btn btn-success" th:if="${email}" th:href="@{/register/regenerate-otp(email=${email})}">gửi lại mã xác thực</a>
+                                    <a class="btn btn-success" th:unless="${email}" th:href="@{/login}">Click here to Login</a>
                                 </div>
                             </div>
                         </div>

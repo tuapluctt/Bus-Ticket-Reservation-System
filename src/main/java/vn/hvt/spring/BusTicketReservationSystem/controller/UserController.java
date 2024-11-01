@@ -36,11 +36,11 @@ public class UserController {
 
     @GetMapping()
     public String showHomePage(Model model, Principal principal){
-        String phoneNumber = principal.getName();
-        User user = userSevice.findByPhoneNumber(phoneNumber);
+        String email = principal.getName();
+        User user = userSevice.findByEmail(email);
 
 
-        List<Booking> bookings = bookingSevice.findPaidOrBookedByPhoneNumber(phoneNumber);
+        List<Booking> bookings = bookingSevice.findPaidOrBookedByEmail(email);
 
 
         model.addAttribute("bookings", bookings);
@@ -52,9 +52,9 @@ public class UserController {
     @GetMapping("/info")
     public String userInfo(Model model, Principal principal) {
         String username = principal.getName();
-        User user = userSevice.findByPhoneNumber(username);
+        User user = userSevice.findByEmail(username);
         model.addAttribute("user", user);
-        return "user_rating";
+        return "user/userinfo";
     }
 
 

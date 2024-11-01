@@ -9,6 +9,8 @@ public interface UserSevice extends UserDetailsService {
     public User findByFullName(String fullName);
     public User findByPhoneNumber(String phoneNumber);
 
+    public User findByEmail(String email);
+
     // đăng ký tài khoản
     public boolean save(RegisterUser registerUser);
 

@@ -17,7 +17,7 @@ public interface BookingSevice {
     List<Booking> searchBookingsByKeyword(String keyword);
     public List<Booking> getAll();
 
-    List<Booking> findPaidOrBookedByPhoneNumber(String phoneNumber);
+    List<Booking> findPaidOrBookedByEmail(String phoneNumber);
     public Booking getBookingById(int bookingId);
 
     public List<Booking> findByPhoneNumber(String phone);

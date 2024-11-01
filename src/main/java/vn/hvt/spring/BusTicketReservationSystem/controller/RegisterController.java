@@ -24,7 +24,7 @@ public class RegisterController {
     }
 
     @GetMapping(value = "/showRegisterForm")
-    public String showRegisterForm(Model model){
+    public String showRegisterForm(@RequestParam(value = "error", required = false) String error,Model model){
         model.addAttribute("registerUser",new RegisterUser());
         return "public/register";
     }
@@ -47,14 +47,13 @@ public class RegisterController {
         }
 
         // kiểm tra xem số điện thoại đã tồn tại hay chưa
-        User userExisting = userSeviceIpml.findByPhoneNumber(registerUser.getPhoneNumber());
+        User userExisting = userSeviceIpml.findByEmail(registerUser.getEmail());
 
         if(userExisting!=null){
             model.addAttribute("registerUser",new RegisterUser());
-            model.addAttribute("my_error","số điện thoại đã được đăng ký");
+            model.addAttribute("my_error","Email đã được đăng ký");
 
             return "public/register";
-
         }
 
         // nếu số điện thoại chưa được đăng ký thì tạo tài khoản mới và kiểm tra đã đăng ký thành công hay chưa
@@ -70,16 +69,16 @@ public class RegisterController {
 
 
     @GetMapping("/verify-account")
-    public String verifyAccount(@RequestParam String phonenumber,
+    public String verifyAccount(@RequestParam String email,
                                 @RequestParam String token,
                                 Model model  ) {
 
         String notification = "";
-        if(userSeviceIpml.isEnable(phonenumber) || userSeviceIpml.verifyAccount(phonenumber, token) ){
+        if(userSeviceIpml.verifyAccount(email, token) ){
             notification="XIN CHÚC MỪNG , TÀI KHOẢN CỦA BẠN ĐÃ ĐƯỢC XÁC MINH.";
         }else{
             notification="RẤT TIẾC, CHÚNG TÔI KHÔNG THỂ XÁC MINH TÀI KHOẢN. VUI LÒNG TẠO LẠI MÃ XÁC THỰC VÀ THỬ LẠI";
-            model.addAttribute("phonenumber",phonenumber);
+            model.addAttribute("email",email);
         }
 
         model.addAttribute("notification",notification);
@@ -88,8 +87,8 @@ public class RegisterController {
     }
 
     @GetMapping("/regenerate-otp")
-    public String regenerateOtp(@RequestParam String phonenumber){
-        userSeviceIpml.regenerateOtp(phonenumber);
+    public String regenerateOtp(@RequestParam String email){
+        userSeviceIpml.regenerateOtp(email);
         return "public/confirmation";
     }
 
