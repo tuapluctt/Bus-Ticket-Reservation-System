@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import vn.hvt.spring.BusTicketReservationSystem.DTO.BookingDTO;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Booking;
 import vn.hvt.spring.BusTicketReservationSystem.enums.BookingStatus;
 import vn.hvt.spring.BusTicketReservationSystem.DTO.TripCard;
+import vn.hvt.spring.BusTicketReservationSystem.enums.EmailType;
 import vn.hvt.spring.BusTicketReservationSystem.service.*;
 import vn.hvt.spring.BusTicketReservationSystem.util.QRCodeGenerator;
 import vn.payos.PayOS;
@@ -80,47 +82,36 @@ public class BookingConTroller {
                 bookingSevice.updateStatus(booking,BookingStatus.PAID);
             }
 
-            // sinh qr code
-            String path = QRCodeGenerator.generateQRCode(booking);
-            bookingSevice.updateQrCode(booking.getId(),path);
+            BookingDTO bookingDTO = bookingSevice.findBookingById(booking.getId());
+
 
             //gửi email
             Map<String,Object> inforBooking = new HashMap<>();
-            TripCard tripCard = tripSevice.getTripCard(booking.getTrip(),booking.getDeparture().getId(),booking.getArrival().getId());
 
-
-            // danh ghế của booling
-            StringJoiner listSeat = new StringJoiner(",");
-
-            booking.getTickets().forEach(ticket -> {
-                listSeat.add(ticket.getSeatName());
-            });
-
-            inforBooking.put("name",booking.getFullName());
-            inforBooking.put("phoneNumber",booking.getPhoneNumber());
-            inforBooking.put("listSeat",listSeat);
-
-            inforBooking.put("tripNamel",tripCard.getTripNamel());
-            inforBooking.put("starTime",tripCard.getStarTime());
-            inforBooking.put("departureDate",tripCard.getDepartureDate());
-            inforBooking.put("departureTime",tripCard.getDepartureTime());
-            inforBooking.put("departureLocation",tripCard.getDepartureLocation());
-            inforBooking.put("arrivalLocation",tripCard.getArrivalLocation());
+            inforBooking.put("name",bookingDTO.getCustomerName());
+            inforBooking.put("phoneNumber",bookingDTO.getCustomerPhone());
+            inforBooking.put("listSeat",bookingDTO.getListSeat());
+            inforBooking.put("tripNamel",bookingDTO.getTripName());
+            inforBooking.put("starTime",bookingDTO.getStarTime());
+            inforBooking.put("departureDate",bookingDTO.getDepartureDate());
+            inforBooking.put("departureTime",bookingDTO.getDepartureTime());
+            inforBooking.put("departureLocation",bookingDTO.getDepartureLocation());
+            inforBooking.put("arrivalLocation",bookingDTO.getArrivalLocation());
 
             // gửi mail
-           // emailSevice.sendEmailConfirmationOfSuccessfulTicket(booking.getEmail(),inforBooking);
+            emailSevice.sendHtmlEmail(bookingDTO.getCustomerEmail(), EmailType.TICKET_CONFIRMATION,inforBooking);
 
 
-            model.addAttribute("name",booking.getFullName());
-            model.addAttribute("tripNamel",tripCard.getTripNamel());
-            model.addAttribute("qrcode",booking.getQrcode());
-            model.addAttribute("phoneNumber",booking.getPhoneNumber());
+            model.addAttribute("name",bookingDTO.getCustomerName());
+            model.addAttribute("tripNamel",bookingDTO.getTripName());
+            model.addAttribute("qrcode",bookingDTO.getQrCode());
+            model.addAttribute("phoneNumber",bookingDTO.getCustomerPhone());
             model.addAttribute("amount",amount);
-            model.addAttribute("departureDate",tripCard.getDepartureDate());
-            model.addAttribute("departureTime",tripCard.getDepartureTime());
-            model.addAttribute("departureLocation",tripCard.getDepartureLocation());
-            model.addAttribute("arrivalLocation",tripCard.getArrivalLocation());
-            model.addAttribute("listSeat",listSeat);
+            model.addAttribute("departureDate",bookingDTO.getDepartureDate());
+            model.addAttribute("departureTime",bookingDTO.getDepartureTime());
+            model.addAttribute("departureLocation",bookingDTO.getDepartureLocation());
+            model.addAttribute("arrivalLocation",bookingDTO.getArrivalLocation());
+            model.addAttribute("listSeat",bookingDTO.getListSeat());
             return "public/result-payment";
         } else if (responseCode.equals("24")){
             model.addAttribute("error", "Giao dịch đã bị hủy");
@@ -150,49 +141,39 @@ public class BookingConTroller {
                 bookingSevice.updateStatus(booking,BookingStatus.PAID);
             }
 
-            // sinh qr code
-            String path = QRCodeGenerator.generateQRCode(booking);
-            bookingSevice.updateQrCode(booking.getId(),path);
+            BookingDTO bookingDTO = bookingSevice.findBookingById(booking.getId());
 
-
-
-            TripCard tripCard = tripSevice.getTripCard(booking.getTrip(),booking.getDeparture().getId(),booking.getArrival().getId());
-
-            StringJoiner listSeat = new StringJoiner(",");
-            booking.getTickets().forEach(ticket -> {
-                listSeat.add(ticket.getSeatName());
-            });
 
             //gửi email
-            // danh ghế của booling
             Map<String,Object> inforBooking = new HashMap<>();
-            inforBooking.put("name",booking.getFullName());
-            inforBooking.put("phoneNumber",booking.getPhoneNumber());
-            inforBooking.put("listSeat",listSeat);
-            inforBooking.put("tripNamel",tripCard.getTripNamel());
-            inforBooking.put("starTime",tripCard.getStarTime());
-            inforBooking.put("departureDate",tripCard.getDepartureDate());
-            inforBooking.put("departureTime",tripCard.getDepartureTime());
-            inforBooking.put("departureLocation",tripCard.getDepartureLocation());
-            inforBooking.put("arrivalLocation",tripCard.getArrivalLocation());
 
+            inforBooking.put("name",bookingDTO.getCustomerName());
+            inforBooking.put("phoneNumber",bookingDTO.getCustomerPhone());
+            inforBooking.put("listSeat",bookingDTO.getListSeat());
+            inforBooking.put("tripNamel",bookingDTO.getTripName());
+            inforBooking.put("starTime",bookingDTO.getStarTime());
+            inforBooking.put("departureDate",bookingDTO.getDepartureDate());
+            inforBooking.put("departureTime",bookingDTO.getDepartureTime());
+            inforBooking.put("departureLocation",bookingDTO.getDepartureLocation());
+            inforBooking.put("arrivalLocation",bookingDTO.getArrivalLocation());
 
-          // emailSevice.sendEmailConfirmationOfSuccessfulTicket(booking.getEmail(),inforBooking);
+            // gửi mail
+            emailSevice.sendHtmlEmail(bookingDTO.getCustomerEmail(), EmailType.TICKET_CONFIRMATION,inforBooking);
 
 
            PaymentLinkData paymentData = payOS.getPaymentLinkInformation(Long.valueOf(orderId));
 
 
 
-            model.addAttribute("name",booking.getFullName());
-            model.addAttribute("tripNamel",tripCard.getTripNamel());
-            model.addAttribute("phoneNumber",booking.getPhoneNumber());
-            model.addAttribute("amount",paymentData.getAmount());
-            model.addAttribute("departureDate",tripCard.getDepartureDate());
-            model.addAttribute("departureTime",tripCard.getDepartureTime());
-            model.addAttribute("departureLocation",tripCard.getDepartureLocation());
-            model.addAttribute("arrivalLocation",tripCard.getArrivalLocation());
-            model.addAttribute("listSeat",listSeat);
+            model.addAttribute("name",bookingDTO.getCustomerName());
+            model.addAttribute("tripNamel",bookingDTO.getTripName());
+            model.addAttribute("qrcode",bookingDTO.getQrCode());
+            model.addAttribute("phoneNumber",bookingDTO.getCustomerPhone());
+            model.addAttribute("departureDate",bookingDTO.getDepartureDate());
+            model.addAttribute("departureTime",bookingDTO.getDepartureTime());
+            model.addAttribute("departureLocation",bookingDTO.getDepartureLocation());
+            model.addAttribute("arrivalLocation",bookingDTO.getArrivalLocation());
+            model.addAttribute("listSeat",bookingDTO.getListSeat());
             return "public/result-payment";
         } else {
             model.addAttribute("error", "Giao dịch đã bị hủy");

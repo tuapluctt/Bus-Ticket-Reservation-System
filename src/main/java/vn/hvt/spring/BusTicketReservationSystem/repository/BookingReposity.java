@@ -6,11 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.ResponseBody;
+import vn.hvt.spring.BusTicketReservationSystem.DTO.BookingDTO;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Booking;
 import vn.hvt.spring.BusTicketReservationSystem.entity.PriceList;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Trip;
 import vn.hvt.spring.BusTicketReservationSystem.enums.BookingStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ResponseBody
@@ -37,5 +39,8 @@ public interface BookingReposity extends JpaRepository<Booking,Integer> {
             "LOWER(b.phoneNumber) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(b.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Booking> searchByKeyword(@Param("keyword") String keyword,Pageable pageable);
+
+    @Query(value = "CALL GetTripsStartingInNext24Hours()", nativeQuery = true)
+    List<Integer> getBookingsForTripsStartingInNext24Hours();
 
 }

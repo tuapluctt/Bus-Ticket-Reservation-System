@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Booking;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Trip;
 import vn.hvt.spring.BusTicketReservationSystem.repository.BookingReposity;
@@ -16,6 +17,7 @@ import vn.hvt.spring.BusTicketReservationSystem.util.QRCodeGenerator;
 import java.util.List;
 
 @SpringBootApplication
+@EnableScheduling
 public class BusTicketReservationSystemApplication {
 
 	public static void main(String[] args) {
