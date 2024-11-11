@@ -20,7 +20,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             System.out.println("Authentication failed: " + exception.getMessage());
             url = "/login?error="+exception.getMessage();
         } else {
-            url = "/login?error=true";
+            url = "/login?error="+exception.getMessage();
         }
         response.sendRedirect( request.getContextPath() + url);
     }

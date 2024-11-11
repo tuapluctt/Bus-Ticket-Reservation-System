@@ -1,5 +1,6 @@
 package vn.hvt.spring.BusTicketReservationSystem.service.ipml;
 
+import com.google.zxing.WriterException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -7,6 +8,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import vn.hvt.spring.BusTicketReservationSystem.DTO.BookingDTO;
+import vn.hvt.spring.BusTicketReservationSystem.DTO.TripCard;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Booking;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Ticket;
 import vn.hvt.spring.BusTicketReservationSystem.enums.BookingStatus;
@@ -17,13 +20,13 @@ import vn.hvt.spring.BusTicketReservationSystem.repository.TripRepository;
 import vn.hvt.spring.BusTicketReservationSystem.service.BookingSevice;
 import vn.hvt.spring.BusTicketReservationSystem.service.StopSevice;
 import vn.hvt.spring.BusTicketReservationSystem.service.TicketSevice;
+import vn.hvt.spring.BusTicketReservationSystem.service.TripSevice;
+import vn.hvt.spring.BusTicketReservationSystem.util.QRCodeGenerator;
 
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BookingSeviceIpml implements BookingSevice {
@@ -42,6 +45,9 @@ public class BookingSeviceIpml implements BookingSevice {
 
     @Autowired
     StopSevice stopSevice;
+
+    @Autowired
+    TripSevice tripSevice;
 
 
     @Override
@@ -154,4 +160,46 @@ public class BookingSeviceIpml implements BookingSevice {
 
         return bookingReposity.save(booking);
     }
+
+
+    @Override
+    public BookingDTO findBookingById(int bookingId) throws IOException, WriterException {
+
+        Booking booking = getBookingById(Integer.valueOf(bookingId));
+        // sinh qr code
+        String path = QRCodeGenerator.generateQRCode(booking);
+        updateQrCode(booking.getId(),path);
+
+        //gửi email
+        Map<String,Object> inforBooking = new HashMap<>();
+        TripCard tripCard = tripSevice.getTripCard(booking.getTrip(),booking.getDeparture().getId(),booking.getArrival().getId());
+
+
+        // danh ghế của booling
+        StringJoiner listSeat = new StringJoiner(",");
+
+        booking.getTickets().forEach(ticket -> {
+            listSeat.add(ticket.getSeatName());
+        });
+
+        BookingDTO bookingDTO = BookingDTO.builder()
+                .bookingId(booking.getId())
+                .customerName(booking.getFullName())
+                .customerPhone(booking.getPhoneNumber())
+                .customerEmail(booking.getEmail())
+                .tripName(tripCard.getTripNamel())
+                .starTime(tripCard.getStarTime())
+                .departureDate(tripCard.getDepartureDate())
+                .departureTime(tripCard.getDepartureTime())
+                .departureLocation(tripCard.getDepartureLocation())
+                .arrivalLocation(tripCard.getArrivalLocation())
+                .listSeat(listSeat.toString())
+                .qrCode(path)
+                .build();
+
+
+        return bookingDTO;
+    }
+
+
 }

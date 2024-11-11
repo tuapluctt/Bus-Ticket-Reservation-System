@@ -11,7 +11,7 @@ public class LoginController {
     @GetMapping("/login")
     public String showLoginPage(@RequestParam(value = "error", required = false) String error, Model model) {
         if (error != null) {
-            model.addAttribute("error", error);
+                model.addAttribute("error", error);
         }
         return "public/login";
     }

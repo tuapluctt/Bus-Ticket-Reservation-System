@@ -29,7 +29,7 @@ public class RatingSeviceIpml implements RatingSevice {
     @Override
     public void saveRating(String phoneNumber, int bookingId, byte point, String describe) {
 
-        User user = userSevice.findByPhoneNumber(phoneNumber);
+        User user = userSevice.findByEmail(phoneNumber);
         Booking booking = bookingSevice.getBookingById(bookingId);
 
         booking.setRated(true);

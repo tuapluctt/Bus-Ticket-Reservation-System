@@ -9,16 +9,20 @@ import org.springframework.stereotype.Service;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Role;
 import vn.hvt.spring.BusTicketReservationSystem.entity.User;
 import vn.hvt.spring.BusTicketReservationSystem.DTO.RegisterUser;
+import vn.hvt.spring.BusTicketReservationSystem.enums.EmailType;
 import vn.hvt.spring.BusTicketReservationSystem.exception.AccountNotVerifiedException;
 import vn.hvt.spring.BusTicketReservationSystem.repository.RoleRepository;
 import vn.hvt.spring.BusTicketReservationSystem.repository.UserRepository;
 import vn.hvt.spring.BusTicketReservationSystem.service.UserSevice;
+import vn.hvt.spring.BusTicketReservationSystem.util.EmailUtils;
 import vn.hvt.spring.BusTicketReservationSystem.util.RandomCode;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,9 +93,12 @@ public class UserSeviceIpml implements UserSevice {
         roles.add(role);
         user.setRoles(roles);
 
-        // luư thanh cồn thì gủi email xác nhận tài khoản
+        // luư thanh công thì gủi email xác nhận tài khoản
         if(userRepository.save(user) != null){
-            emailSeviceIpml.sendHtmlEmail(user.getPhoneNumber(),user.getEmail(),user.getActivationCode());
+            Map<String, Object> emailData = new HashMap<>();
+            emailData.put("name",user.getFullName());
+            emailData.put("url", EmailUtils.getVerificationUrl(user.getEmail(),user.getActivationCode()));
+            emailSeviceIpml.sendHtmlEmail(user.getEmail(), EmailType.ACCOUNT_REGISTRATION_CONFIRMATION,emailData);
             return true;
         }
 
@@ -123,7 +130,10 @@ public class UserSeviceIpml implements UserSevice {
         user.setActivationCode(RandomCode.getSoNgauNhien());
         user.setOtpGeneratedTime(LocalDateTime.now());
 
-        emailSeviceIpml.sendHtmlEmail(user.getPhoneNumber(),user.getEmail(),user.getActivationCode());
+        Map<String, Object> emailData = new HashMap<>();
+        emailData.put("name",user.getFullName());
+        emailData.put("url", EmailUtils.getVerificationUrl(user.getEmail(),user.getActivationCode()));
+        emailSeviceIpml.sendHtmlEmail(user.getEmail(), EmailType.ACCOUNT_REGISTRATION_CONFIRMATION,emailData);
 
         userRepository.save(user);
     }
