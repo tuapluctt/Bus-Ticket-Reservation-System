@@ -43,4 +43,5 @@ public interface BookingReposity extends JpaRepository<Booking,Integer> {
     @Query(value = "CALL GetTripsStartingInNext24Hours()", nativeQuery = true)
     List<Integer> getBookingsForTripsStartingInNext24Hours();
 
+    Booking findByBookingCode(String bookingCode);
 }

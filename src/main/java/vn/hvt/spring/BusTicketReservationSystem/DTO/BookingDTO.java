@@ -20,6 +20,6 @@ public class BookingDTO {
     private String departureLocation;
     private String arrivalLocation;
     private String listSeat;
-    private String qrCode;
+    private String bookingCode;
 
 }

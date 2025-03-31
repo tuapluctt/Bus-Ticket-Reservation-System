@@ -9,6 +9,7 @@
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css" media="all" href="../../css/styles.css"   />
     <link href="../icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg  text-white " style=" background-color:#0D572B;">
@@ -44,20 +45,25 @@
             </div>
 
             <div class="row g-0 " >
-                <div class="col">
-                    <div class=" text-white" style=" background-color:#0D572B;">
-                        <div class="card-header ">
+                <div class="col-md-5 d-flex justify-content-center align-items-center">
+                    <div id="qrcode" ></div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="text-white" style="background-color:#0D572B;">
+                        <div class="card-header">
                             <h5 class="text-center">THÔNG TIN CHUYẾN XE</h5>
                         </div>
-                        <div class="card-body">
-                            <p class="card-text">Số điện thoại : <strong th:text="${phoneNumber}"> </strong></p>
-                            <p class="card-text">Chuyến xe : <strong th:text="${tripNamel}"> </strong></p>
-                            <p class="card-text">Thời gian : <strong th:text="${departureDate}"></strong> </p>
-                            <p class="card-text">Thời gian đón (dự kiến) : <strong th:text="${departureTime}"> </strong></p>
-                            <p class="card-text">Điểm đón : <strong th:text="${departureLocation}">  </strong></p>
-                            <p class="card-text">Điểm trả : <strong th:text="${arrivalLocation}"> </strong></p>
-                            <p class="card-text">Số ghế : <strong th:text="${listSeat}"></strong></p>
-                            <p class="card-text">Số tiền thanh toán : <strong th:text="${amount}"> </strong></p>
+                        <div class="card-body d-flex align-items-start">
+                            <div class="flex-grow-1">
+                                <p class="card-text">Số điện thoại : <strong th:text="${phoneNumber}"> </strong></p>
+                                <p class="card-text">Chuyến xe : <strong th:text="${tripName}"> </strong></p>
+                                <p class="card-text">Thời gian : <strong th:text="${departureDate}"></strong> </p>
+                                <p class="card-text">Thời gian đón (dự kiến) : <strong th:text="${departureTime}"> </strong></p>
+                                <p class="card-text">Điểm đón : <strong th:text="${departureLocation}"> </strong></p>
+                                <p class="card-text">Điểm trả : <strong th:text="${arrivalLocation}"> </strong></p>
+                                <p class="card-text">Số ghế : <strong th:text="${listSeat}"></strong></p>
+                            </div>
                         </div>
                         <div class="card-footer"></div>
                     </div>
@@ -79,5 +85,21 @@
 
 </div>
 <div th:replace="public/footer:: footer"></div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var bookingCode = "[[${booking}]]";
+
+        if (bookingCode) {
+            new QRCode(document.getElementById("qrcode"), {
+                text: bookingCode,   // Nội dung mã QR
+                width: 180,        // Chiều rộng
+                height: 180,       // Chiều cao
+                colorDark: "#000", // Màu đen
+                colorLight: "#fff", // Màu trắng
+                correctLevel: QRCode.CorrectLevel.H // Mức độ sửa lỗi
+            });
+        }
+    });
+</script>
 </body>
 </html>

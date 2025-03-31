@@ -25,8 +25,9 @@ public interface BookingSevice {
     public List<Booking> findByPhoneNumber(String phone);
     public void updateStatus(Booking booking, BookingStatus bookingStatus);
 
-    public void updateQrCode(int bookingId, String QrCode);
     public Booking saveBooking(int tripId, String phoneNumber, String fullName, String email, String[] listTicket,int departureId,int arrivalId) throws IOException, WriterException;
 
     BookingDTO findBookingById(int id) throws IOException, WriterException;
+
+    BookingDTO checkInTicket(String idBooking, String currentTripCode) throws IOException, WriterException;
 }

@@ -1,8 +1,14 @@
 package vn.hvt.spring.BusTicketReservationSystem.service.ipml;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -11,6 +17,8 @@ import org.thymeleaf.context.Context;
 import vn.hvt.spring.BusTicketReservationSystem.enums.EmailType;
 import vn.hvt.spring.BusTicketReservationSystem.service.EmailSevice;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -62,6 +70,18 @@ public class EmailSeviceIpml implements EmailSevice {
             helper.setTo(to);
             helper.setText(text, true);
 
+            if (info.containsKey("bookingCode")) {
+                String bookingCode = (String) info.get("bookingCode");
+                try {
+                    byte[] qrCodeImage = generateQRCodeImage(bookingCode, 200, 200); // Tạo ảnh QR
+                    ByteArrayResource imageResource = new ByteArrayResource(qrCodeImage);
+
+                    helper.addInline("qrCodeImage", imageResource, "image/png"); // Đính kèm
+                } catch (WriterException | IOException e) {
+                    System.out.println("Error generating QR code: " + e.getMessage());
+                }
+            }
+
             emailSender.send(message);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -98,5 +118,19 @@ public class EmailSeviceIpml implements EmailSevice {
             default:
                 return "default_template";
         }
+    }
+
+
+
+    private byte[] generateQRCodeImage(String text, int width, int height)
+            throws WriterException, IOException {
+
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
+        byte[] pngData = pngOutputStream.toByteArray();
+        return pngData;
     }
 }

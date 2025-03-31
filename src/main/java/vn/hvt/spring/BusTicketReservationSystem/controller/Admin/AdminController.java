@@ -2,6 +2,8 @@ package vn.hvt.spring.BusTicketReservationSystem.controller.Admin;
 
 import com.google.zxing.WriterException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
@@ -20,7 +22,6 @@ import vn.hvt.spring.BusTicketReservationSystem.repository.RouteRepository;
 import vn.hvt.spring.BusTicketReservationSystem.repository.ScheduleRopository;
 import vn.hvt.spring.BusTicketReservationSystem.service.BookingSevice;
 import vn.hvt.spring.BusTicketReservationSystem.service.TripSevice;
-import vn.hvt.spring.BusTicketReservationSystem.util.QRCodeGenerator;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -28,28 +29,16 @@ import java.util.List;
 
 @RequestMapping("/admin")
 @Controller
+@RequiredArgsConstructor
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class AdminController {
 
-    @Autowired
     BookingSevice bookingSevice;
-
-    @Autowired
     TripSevice tripSevice;
-
-    @Autowired
     PriceListRepository priceListRepository;
-
-    @Autowired
     RouteRepository routeRepository;
-
-    @Autowired
     ScheduleRopository scheduleRopository;
-
-    @Autowired
     CarRepository carRepository;
-
-
-
 
 
     @GetMapping()
@@ -111,8 +100,6 @@ public class AdminController {
 
         if ("confirm".equals(action)) {
             bookingSevice.updateStatus(booking, BookingStatus.BOOKED);
-            String path = QRCodeGenerator.generateQRCode(booking);
-            bookingSevice.updateQrCode(booking.getId(),path);
 
         } else if ("cancel".equals(action)) {
             bookingSevice.updateStatus(booking, BookingStatus.CANCELLED);
@@ -247,16 +234,11 @@ public class AdminController {
         return "admin/charts";
     }
 
-    @GetMapping(value = "/booking2")
-    public String chartt(){
-        return "trip";
-    }
 
     @GetMapping(value = "/schedule")
     public String schedule(){
         return "admin/list-schedule";
     }
-
 
 
 }

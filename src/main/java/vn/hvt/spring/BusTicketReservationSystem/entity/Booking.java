@@ -32,8 +32,8 @@ public class Booking{
     @Column(name="date_created")
     private LocalDateTime dateCreated;
 
-    @Column(name="qrcode")
-    private String qrcode;
+    @Column(name="booking_code")
+    private String bookingCode;
 
     @Column(name="rated ")
     private boolean rated ;
@@ -117,12 +117,12 @@ public class Booking{
         this.dateCreated = dateCreated;
     }
 
-    public String getQrcode() {
-        return qrcode;
+    public String getBookingCode() {
+        return bookingCode;
     }
 
-    public void setQrcode(String qrcode) {
-        this.qrcode = qrcode;
+    public void setBookingCode(String bookingCode) {
+        this.bookingCode = bookingCode;
     }
 
     public List<Ticket> getTickets() {
