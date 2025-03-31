@@ -1,9 +1,12 @@
 package vn.hvt.spring.BusTicketReservationSystem.exception;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.function.EntityResponse;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import vn.hvt.spring.BusTicketReservationSystem.DTO.resonse.ApiResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -14,4 +17,15 @@ public class GlobalExceptionHandler {
         redirectAttributes.addFlashAttribute("error", errorMessage);
         return "redirect:/login";
     }
+
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ApiResponse> handleAppException(AppException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+        ApiResponse response = ApiResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .build();
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(response);
+    }
+
 }

@@ -3,25 +3,20 @@ package vn.hvt.spring.BusTicketReservationSystem.controller;
 import com.google.zxing.WriterException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import vn.hvt.spring.BusTicketReservationSystem.DTO.BookingDTO;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Booking;
 import vn.hvt.spring.BusTicketReservationSystem.enums.BookingStatus;
-import vn.hvt.spring.BusTicketReservationSystem.DTO.TripCard;
 import vn.hvt.spring.BusTicketReservationSystem.enums.EmailType;
 import vn.hvt.spring.BusTicketReservationSystem.service.*;
-import vn.hvt.spring.BusTicketReservationSystem.util.QRCodeGenerator;
 import vn.payos.PayOS;
-import vn.payos.type.PaymentData;
 import vn.payos.type.PaymentLinkData;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringJoiner;
 
 @Controller
 public class BookingConTroller {
@@ -91,22 +86,22 @@ public class BookingConTroller {
             inforBooking.put("name",bookingDTO.getCustomerName());
             inforBooking.put("phoneNumber",bookingDTO.getCustomerPhone());
             inforBooking.put("listSeat",bookingDTO.getListSeat());
-            inforBooking.put("tripNamel",bookingDTO.getTripName());
+            inforBooking.put("tripName",bookingDTO.getTripName());
             inforBooking.put("starTime",bookingDTO.getStarTime());
             inforBooking.put("departureDate",bookingDTO.getDepartureDate());
             inforBooking.put("departureTime",bookingDTO.getDepartureTime());
             inforBooking.put("departureLocation",bookingDTO.getDepartureLocation());
             inforBooking.put("arrivalLocation",bookingDTO.getArrivalLocation());
+            inforBooking.put("bookingCode",bookingDTO.getBookingCode());
 
             // gửi mail
             emailSevice.sendHtmlEmail(bookingDTO.getCustomerEmail(), EmailType.TICKET_CONFIRMATION,inforBooking);
 
 
             model.addAttribute("name",bookingDTO.getCustomerName());
-            model.addAttribute("tripNamel",bookingDTO.getTripName());
-            model.addAttribute("qrcode",bookingDTO.getQrCode());
+            model.addAttribute("tripName",bookingDTO.getTripName());
+            model.addAttribute("booking",bookingDTO.getBookingCode());
             model.addAttribute("phoneNumber",bookingDTO.getCustomerPhone());
-            model.addAttribute("amount",amount);
             model.addAttribute("departureDate",bookingDTO.getDepartureDate());
             model.addAttribute("departureTime",bookingDTO.getDepartureTime());
             model.addAttribute("departureLocation",bookingDTO.getDepartureLocation());
@@ -150,12 +145,13 @@ public class BookingConTroller {
             inforBooking.put("name",bookingDTO.getCustomerName());
             inforBooking.put("phoneNumber",bookingDTO.getCustomerPhone());
             inforBooking.put("listSeat",bookingDTO.getListSeat());
-            inforBooking.put("tripNamel",bookingDTO.getTripName());
+            inforBooking.put("tripName",bookingDTO.getTripName());
             inforBooking.put("starTime",bookingDTO.getStarTime());
             inforBooking.put("departureDate",bookingDTO.getDepartureDate());
             inforBooking.put("departureTime",bookingDTO.getDepartureTime());
             inforBooking.put("departureLocation",bookingDTO.getDepartureLocation());
             inforBooking.put("arrivalLocation",bookingDTO.getArrivalLocation());
+            inforBooking.put("bookingCode",bookingDTO.getBookingCode());
 
             // gửi mail
             emailSevice.sendHtmlEmail(bookingDTO.getCustomerEmail(), EmailType.TICKET_CONFIRMATION,inforBooking);
@@ -166,8 +162,8 @@ public class BookingConTroller {
 
 
             model.addAttribute("name",bookingDTO.getCustomerName());
-            model.addAttribute("tripNamel",bookingDTO.getTripName());
-            model.addAttribute("qrcode",bookingDTO.getQrCode());
+            model.addAttribute("tripName",bookingDTO.getTripName());
+            model.addAttribute("booking",bookingDTO.getBookingCode());
             model.addAttribute("phoneNumber",bookingDTO.getCustomerPhone());
             model.addAttribute("departureDate",bookingDTO.getDepartureDate());
             model.addAttribute("departureTime",bookingDTO.getDepartureTime());

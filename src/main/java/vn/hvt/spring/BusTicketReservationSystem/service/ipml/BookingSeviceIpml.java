@@ -4,7 +4,6 @@ import com.google.zxing.WriterException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,8 @@ import vn.hvt.spring.BusTicketReservationSystem.entity.Booking;
 import vn.hvt.spring.BusTicketReservationSystem.entity.Ticket;
 import vn.hvt.spring.BusTicketReservationSystem.enums.BookingStatus;
 import vn.hvt.spring.BusTicketReservationSystem.enums.SeatStatus;
+import vn.hvt.spring.BusTicketReservationSystem.exception.AppException;
+import vn.hvt.spring.BusTicketReservationSystem.exception.ErrorCode;
 import vn.hvt.spring.BusTicketReservationSystem.repository.BookingReposity;
 import vn.hvt.spring.BusTicketReservationSystem.repository.TicketRepository;
 import vn.hvt.spring.BusTicketReservationSystem.repository.TripRepository;
@@ -21,7 +22,6 @@ import vn.hvt.spring.BusTicketReservationSystem.service.BookingSevice;
 import vn.hvt.spring.BusTicketReservationSystem.service.StopSevice;
 import vn.hvt.spring.BusTicketReservationSystem.service.TicketSevice;
 import vn.hvt.spring.BusTicketReservationSystem.service.TripSevice;
-import vn.hvt.spring.BusTicketReservationSystem.util.QRCodeGenerator;
 
 
 import java.io.IOException;
@@ -107,6 +107,10 @@ public class BookingSeviceIpml implements BookingSevice {
                 ticketSevice.updateStatusById(ticket.getId(), SeatStatus.BOOKED);
             });
         }else if(bookingStatus == BookingStatus.PAID ){
+            // tạo mã booking code
+            booking.setBookingCode(UUID.randomUUID().toString());
+            bookingReposity.save(booking);
+
             booking.getTickets().forEach( ticket -> {
                 ticketSevice.updateStatusById(ticket.getId(), SeatStatus.SOLD);
             });
@@ -118,13 +122,6 @@ public class BookingSeviceIpml implements BookingSevice {
 
         booking.setStatus(bookingStatus);
 
-        bookingReposity.save(booking);
-    }
-
-    @Override
-    public void updateQrCode(int bookingId, String QrCode) {
-        Booking booking = bookingReposity.findById(bookingId).get();
-        booking.setQrcode(QrCode);
         bookingReposity.save(booking);
     }
 
@@ -166,14 +163,9 @@ public class BookingSeviceIpml implements BookingSevice {
     public BookingDTO findBookingById(int bookingId) throws IOException, WriterException {
 
         Booking booking = getBookingById(Integer.valueOf(bookingId));
-        // sinh qr code
-        String path = QRCodeGenerator.generateQRCode(booking);
-        updateQrCode(booking.getId(),path);
 
-        //gửi email
         Map<String,Object> inforBooking = new HashMap<>();
         TripCard tripCard = tripSevice.getTripCard(booking.getTrip(),booking.getDeparture().getId(),booking.getArrival().getId());
-
 
         // danh ghế của booling
         StringJoiner listSeat = new StringJoiner(",");
@@ -194,12 +186,40 @@ public class BookingSeviceIpml implements BookingSevice {
                 .departureLocation(tripCard.getDepartureLocation())
                 .arrivalLocation(tripCard.getArrivalLocation())
                 .listSeat(listSeat.toString())
-                .qrCode(path)
+                .bookingCode(booking.getBookingCode())
                 .build();
 
 
         return bookingDTO;
     }
 
+    @Override
+    public BookingDTO checkInTicket(String idBooking, String currentTripCode) throws IOException, WriterException {
+        Optional<Booking> optionalBooking = Optional.ofNullable(bookingReposity.findByBookingCode(idBooking));
 
+        if (optionalBooking.isEmpty()) {
+            throw new AppException(ErrorCode.BOOKING_NOT_FOUND);
+        }
+
+        Booking booking = optionalBooking.get();
+
+        // 2. Vé đã bị hủy?
+        if (booking.getStatus().equals(BookingStatus.CANCELLED)) {
+            throw new AppException(ErrorCode.BOOKING_CANCELED);
+        }
+
+        // 3. Đúng chuyến?
+        if (booking.getTrip().getId() != Integer.parseInt(currentTripCode)) {
+            throw new  AppException(ErrorCode.WRONG_BOOKING);
+        }
+
+        // 4. Đã check-in?
+        if (booking.getStatus().equals(BookingStatus.CHECKED_IN)) {
+            throw new AppException(ErrorCode.BOOKING_ALREADY_CHECKED_IN);
+        }
+
+        booking.setStatus(BookingStatus.CHECKED_IN);
+        bookingReposity.save(booking);
+        return this.findBookingById(booking.getId());
+    }
 }

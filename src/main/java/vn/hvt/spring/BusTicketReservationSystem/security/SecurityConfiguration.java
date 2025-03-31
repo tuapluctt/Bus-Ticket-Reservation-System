@@ -42,10 +42,12 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.cors(cors -> cors.disable()) // Thử tắt CORS để kiểm tra
+                .csrf(csrf -> csrf.disable()) // Thử tắt CSRF nếu cần
                 .authorizeHttpRequests(
                 configurer->configurer
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/driver/**").hasAnyRole("DRIVER","ADMIN")
                         .anyRequest().permitAll()
         ).formLogin(
                 form->form.loginPage("/login")
