@@ -4,6 +4,26 @@ Website hỗ trợ người dùng tra cứu, đặt vé xe khách và quản lý
 
 ---
 
+## 💻 Công nghệ sử dụng
+
+- Java Spring Boot
+- MySQL
+- Thymeleaf (Giao diện)
+- Docker
+- AWS EC2
+- Bootstrap, HTML, CSS, JS
+
+---
+
+## 🐳 Triển khai hệ thống
+
+Hệ thống được đóng gói và triển khai bằng Docker:
+
+- Build ứng dụng từ `Dockerfile`
+- Deploy trên EC2 (AWS) thông qua Docker container
+
+---
+
 ## ✨ Chức năng chính
 
 ### 🧑‍💼 Khách vãng lai
@@ -12,7 +32,7 @@ Website hỗ trợ người dùng tra cứu, đặt vé xe khách và quản lý
 - Tìm kiếm chuyến xe
 - Xem thông tin chi tiết chuyến xe
 - Xem các trang giới thiệu tuyến xe
-- Đặt vé và thanh toán online
+- Đặt vé và thanh toán online (pay os, vnpay test)
 - Nhận thông tin vé qua email
 
 ### 👤 Thành viên
@@ -34,25 +54,6 @@ Website hỗ trợ người dùng tra cứu, đặt vé xe khách và quản lý
 
 ---
 
-## 💻 Công nghệ sử dụng
-
-- Java Spring Boot
-- MySQL
-- Thymeleaf (Giao diện)
-- Docker
-- AWS EC2
-- Bootstrap, HTML, CSS, JS
-
----
-
-## 🐳 Triển khai hệ thống
-
-Hệ thống được đóng gói và triển khai bằng Docker:
-
-- Build ứng dụng từ `Dockerfile`
-- Deploy trên EC2 (AWS) thông qua Docker container
-
----
 
 ## 📷 Một số hình ảnh (gợi ý - thêm sau nếu có)
 
