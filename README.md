@@ -37,7 +37,7 @@ Website hỗ trợ người dùng tra cứu, đặt vé xe khách và quản lý
 ## 💻 Công nghệ sử dụng
 
 - Java Spring Boot
-- MySQL / MariaDB
+- MySQL
 - Thymeleaf (Giao diện)
 - Docker
 - AWS EC2
@@ -51,8 +51,6 @@ Hệ thống được đóng gói và triển khai bằng Docker:
 
 - Build ứng dụng từ `Dockerfile`
 - Deploy trên EC2 (AWS) thông qua Docker container
-- MySQL cũng được chạy bằng Docker để hỗ trợ việc kết nối nội bộ
-- Ứng dụng chạy trên port `8080`, MySQL trên `3306`
 
 ---
 
@@ -60,6 +58,8 @@ Hệ thống được đóng gói và triển khai bằng Docker:
 
 > Bạn có thể chèn thêm ảnh minh họa như:
 > - Giao diện tìm kiếm chuyến xe
+![image](https://github.com/user-attachments/assets/847ba74d-4ec0-49b2-b419-83c393beeee2)
+> - Chọn ghế 
 > - Trang thanh toán
 > - Mã QR vé
 > - Giao diện quản trị của Admin
