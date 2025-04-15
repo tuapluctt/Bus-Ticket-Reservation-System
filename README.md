@@ -58,6 +58,7 @@ Hệ thống được đóng gói và triển khai bằng Docker:
 
 > Bạn có thể chèn thêm ảnh minh họa như:
 > - Đăng ký , đăng nhập , email xác minh tài khoản
+
 ![image](https://github.com/user-attachments/assets/ff6014ee-b735-4f90-8671-2cf9674e5686)
 ![image](https://github.com/user-attachments/assets/1f56e2fa-d1d7-4f2f-ac16-483ecbf4962f)
 ![image](https://github.com/user-attachments/assets/f3b82084-7fd2-4a7e-85bb-4406dc7db344)
@@ -65,18 +66,24 @@ Hệ thống được đóng gói và triển khai bằng Docker:
 > - Giao diện tìm kiếm chuyến xe
 
 ![image](https://github.com/user-attachments/assets/62bdf8b3-aba8-4949-9cd3-72a56a8ef762)
-
 ![image](https://github.com/user-attachments/assets/847ba74d-4ec0-49b2-b419-83c393beeee2)
 
 > - Chọn ghế
+
 ![image](https://github.com/user-attachments/assets/4c44c859-9edc-424e-8cd0-12b2917bc964)
 
 > - Trang thanh toán
+
 ![image](https://github.com/user-attachments/assets/d3f18695-f256-4a74-8f51-ae11c9f231a5)
-thanh toán thành công
+
+> -thanh toán thành công
+
 ![image](https://github.com/user-attachments/assets/a2cf4649-954a-4738-8f64-6a0c0d04c650)
-Gửi thông tin vé về email
+
+> -Gửi thông tin vé về email
+> 
 ![image](https://github.com/user-attachments/assets/f1051b61-8ee6-4d3e-beac-ebca49caca88)
+> 
 
 > - Giao diện quản trị của Admin
 ![image](https://github.com/user-attachments/assets/4fd0b5f1-f320-4eef-b02c-cf159c47f3f2)
