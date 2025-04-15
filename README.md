@@ -55,9 +55,8 @@ Hệ thống được đóng gói và triển khai bằng Docker:
 ---
 
 
-## 📷 Một số hình ảnh (gợi ý - thêm sau nếu có)
+## 📷 Một số hình ảnh 
 
-> Bạn có thể chèn thêm ảnh minh họa như:
 > - Đăng ký , đăng nhập , email xác minh tài khoản
 
 ![image](https://github.com/user-attachments/assets/ff6014ee-b735-4f90-8671-2cf9674e5686)
